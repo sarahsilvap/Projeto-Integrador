@@ -1,0 +1,10 @@
+@use 'material-icons/iconfont/material-icons.css';
+@use "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Dosis:wght@200..800&display=swap');
+
+#app {
+  min-width: 100vw;
+  min-height: 100vh;
+  background-color: var(--backgroud-light-color);
+  font-family: "Dosis", sans-serif;
+}

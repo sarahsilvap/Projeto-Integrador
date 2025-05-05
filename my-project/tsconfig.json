@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "jsx": "preserve",  // Caso esteja utilizando JSX dentro dos arquivos Vue
+    "target": "esnext",  // Pode ser ajustado conforme sua necessidade
+    "module": "esnext"   // Pode ser ajustado conforme sua necessidade
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.d.ts",
+    "src/**/*.tsx",
+    "src/**/*.vue"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
