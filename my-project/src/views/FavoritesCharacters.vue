@@ -19,6 +19,7 @@ import Cards from "../components/Cards.vue"
 import ButtonRouteLabel from "../components/ButtonRouteLabel.vue";
 import { useFavoriteStore } from '../stores/FavoritesStore';
 import { computed } from "vue";
+// import Menu from "../components/Menu.vue";
 
 const favoritesStore = useFavoriteStore();
 
