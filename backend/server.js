@@ -8,11 +8,14 @@ const PORT = 3000;
 
 app.use(cors());
 app.use(express.json());
+app.use("api/pets", petRoutes);
 
 app.use("/api/pets", petsRoutes);
 
 connectMongo().then(() => {
-  app.listen(PORT, () => {
-    console.log(`🚀 Servidor rodando em http://localhost:${PORT}`);
-  });
+  app
+    .listen(PORT, () => {
+      console.log(`🚀 Servidor rodando em http://localhost:${PORT}`);
+    })
+    .catch((err) => console.log(err));
 });
