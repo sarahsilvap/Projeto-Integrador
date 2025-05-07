@@ -1,6 +1,16 @@
+<script setup lang="ts">
+import { defineProps } from "vue";
+import { Pet }  from "../models/pet.js";
+
+const pet = defineProps<{
+  pets: Pet[];
+}>();
+
+</script>
+
 <template>
   <div class="grid grid-cols-5 gap-5 px-8 w-full">
-    <div v-for="pet in pets" :key="pet.id">
+    <div v-for="pet in pets" :key="pet._id">
       <div
         :style="
           pet.imageUrl
@@ -58,14 +68,5 @@
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-import { Pet }  from "../models/pet.js";
-
-const pet = defineProps<{
-  pets: Pet[];
-}>();
-
-</script>
 
 <style scoped></style>

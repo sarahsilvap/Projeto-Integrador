@@ -1,5 +1,5 @@
 export interface Pet {
-  id: string;
+  _id: string;
   name: string;
   color: string;
   species: string;
@@ -9,4 +9,3 @@ export interface Pet {
   imageUrl: string;
   available: boolean;
 }
-
