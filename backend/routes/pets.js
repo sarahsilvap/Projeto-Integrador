@@ -1,7 +1,13 @@
 import express from "express";
-const multer = requite("multer");
-const path = require("path");
+import multer from "multer";
+import path from "path";
 import Pet from "../models/Pet.js";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
 
 const router = express.Router();
 
@@ -13,7 +19,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 router.post("/", upload.single("image"), async (req, res) => {
-  const { name, species, size, age, available } = new Pet(req.body);
+  const { name, species, size, age, available } = req.body;
   const coverImage = req.file ? `/uploads/${req.file.filename}` : null;
 
   try {
@@ -23,11 +29,11 @@ router.post("/", upload.single("image"), async (req, res) => {
   } catch (err) {
     res.status(500).json({ message: "Erro ao salvar PET", err });
   }
+});
 
-  router.get("/", async (req, res) => {
+router.get("/", async (req, res) => {
     const pets = await Pet.find();
     res.json(pets);
   });
-});
 
 export default router;

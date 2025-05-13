@@ -1,5 +1,5 @@
 <template>
-  <header class="bg-white shadow-md">
+  <header class="bg-white shadow-md z-10 relative">
     <div class="flex items-center justify-between px-6 py-4">
       <div class="ml-4">
         <img :src="logo" alt="Logo Adote Petz" class="h-10 mr-4" />
@@ -8,7 +8,7 @@
       <nav class="flex gap-6 items-center">
         <Menu as="div" class="relative">
           <MenuButton
-            class="text-gray-800 font-medium hover:text-blue-600 flex items-center gap-1"
+            class="text-gray-800 hover:cursor-pointer font-medium hover:text-[#faa72d] flex items-center gap-1"
           >
             Institucional
             <svg
@@ -35,7 +35,7 @@
             leave-to="transform scale-95 opacity-0"
           >
             <MenuItems
-              class="absolute mt-2 w-56 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-50"
+              class="absolute mt-2 w-56 rounded-md bg-white shadow-lg ring-opacity-5 focus:outline-none z-50"
             >
               <div class="p-1 text-sm text-gray-800">
                 <MenuItem v-slot="{ active }">
@@ -60,30 +60,21 @@
           </Transition>
         </Menu>
 
-        <a href="#" class="text-gray-800 font-medium hover:text-blue-600"
-          >ONGs/Protetores</a
+        <a href="#" class="text-gray-800 font-medium hover:text-[#faa72d]"
+          >Favoritos</a
         >
-        <a href="#" class="text-gray-800 font-medium hover:text-blue-600"
-          >Unidades Petz</a
-        >
-        <a href="#" class="text-gray-800 font-medium hover:text-blue-600"
-          >Blog</a
-        >
-        <a href="#" class="text-gray-800 font-medium hover:text-blue-600"
-          >FAQ</a
+        <a href="#" class="text-gray-800 font-medium hover:text-[#faa72d]"
+          >Unidade Petz</a
         >
       </nav>
 
       <div class="flex items-center gap-4">
         <button
-          class="text-orange-600 border border-orange-500 px-3 py-1 rounded hover:bg-orange-50"
+          class="text-white bg-[#faa72d] border px-3 py-1 rounded hover:bg-[#fcca4f] hover:cursor-pointer"
         >
           Quero adotar
         </button>
-        <button class="text-gray-800 border px-3 py-1 rounded hover:bg-gray-100">
-          Seja nosso parceiro
-        </button>
-        <button class="text-gray-800 border px-3 py-1 rounded hover:bg-gray-100">
+        <button class="text-gray-800 border px-3 py-1 rounded hover:bg-gray-100 hover:cursor-pointer">
           Entrar
         </button>
       </div>
@@ -98,5 +89,5 @@ import { Transition } from "vue";
 import logo from "../assets/logo.png";
 
 const itemClass = (active) =>
-  `block px-4 py-2 ${active ? "bg-gray-100 text-blue-600" : "text-gray-800"}`;
+  `block px-4 py-2 ${active ? "bg-gray-100 text-[#faa72d]" : "text-gray-800"}`;
 </script>

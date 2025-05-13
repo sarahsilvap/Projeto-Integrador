@@ -10,7 +10,7 @@
         <ButtonRouteLabel />
       </div>
     </div>
-    <Cards :characters="characters" />
+    <Cards v-for="pet in pets" :key="pet._id" :pet="pet" />
   </main>
 </template>
 
@@ -23,7 +23,7 @@ import { computed } from "vue";
 
 const favoritesStore = useFavoriteStore();
 
-const characters = computed(() => favoritesStore.favorites);
+const pets = computed(() => favoritesStore.favorites);
 
 </script>
 

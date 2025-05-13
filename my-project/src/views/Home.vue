@@ -32,18 +32,18 @@ const isPetFavorite = (name: string) => {
 
 <template>
   <Menu />
+  <div
+    class="col-span-4 text-primary text-5xl text-center bg-[#efefef] p-6"
+  >
+    <h1>🐶 Animais para adoção 😺</h1>
+  </div>
   <main
-    class="w-full min-h-screen bg-gradient-to-r from-gray-950 via-blue-950 to-fuchsia-800 text-white grid grid-cols-4 p-10"
+    class="w-full min-h-screen bg-[#efefef] grid grid-cols-4 gap-6 p-5 sm:gap-4 md:gap-3"
   >
     <div
-      class="col-span-4 text-primary text-5xl text-center flex flex-col items-center justify-center"
+      class="col-span-5 grid grid-cols-1 sm:grid-cols- lg:grid-cols-5 gap-6"
     >
-      <h1>🐶 Animais para adoção 😺</h1>
-    </div>
-    <div
-      class="col-span-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-10"
-    >
-      <Cards: pets="pets" v-for="pet in pets" :key="pet._id" :pet="pet" />
+      <Cards v-for="pet in pets" :key="pet._id" :pet="pet" />
     </div>
   </main>
 </template>

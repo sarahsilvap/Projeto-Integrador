@@ -1,27 +1,27 @@
 import { defineStore } from "pinia";
-import { Animal } from "../models/pet";
+import { Pet } from "../models/pet";
 
 export type FavoriteStore = {
-  favorites: Array<Animal>;
+  favorites: Array<Pet>;
 };
 
 export const useFavoriteStore = defineStore("favorites", {
   state: () => ({
-    favorites: [] as Animal[],
+    favorites: [] as Pet[],
   }),
   actions: {
-    addFavorite(newFavorite: Animal) {
+    addFavorite(newFavorite: Pet) {
       const deepCopy = JSON.parse(JSON.stringify(newFavorite));
       this.favorites.push(deepCopy);
     },
     removeFavorite(id: string) {
-      const index = this.favorites.findIndex((a) => a.id === id);
+      const index = this.favorites.findIndex((a: Pet) => a._id === id);
       if (index >= 0) {
         this.favorites.splice(index, 1);
       }
     },
     isFavorite(id: string) {
-      return this.favorites.some((a) => a.id === id);
+      return this.favorites.some((a: Pet) => a._id === id);
     },
   },
 
