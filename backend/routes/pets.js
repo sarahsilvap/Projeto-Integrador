@@ -8,7 +8,6 @@ import { dirname } from "path";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-
 const router = express.Router();
 
 const storage = multer.diskStorage({
@@ -19,11 +18,29 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 router.post("/", upload.single("image"), async (req, res) => {
-  const { name, species, size, age, available } = req.body;
+  const { name, age, castrated, available } = req.body;
+  const { type, size } = req.body;
+  // Validação
+  if (!["cachorro", "gato", "Cachorro", "Gato"].includes(type)) {
+    return res.status(400).json({ error: "Tipo inválido" });
+  }
+
+  if (!["pequeno", "medio", "grande", "Pequeno", "Medio", "Grande"].includes(size)) {
+    return res.status(400).json({ error: "Tamanho inválido" });
+  }
+
   const coverImage = req.file ? `/uploads/${req.file.filename}` : null;
 
   try {
-    const newPet = new Pet({ name, species, size, age, available, coverImage });
+    const newPet = new Pet({
+      name,
+      type,
+      size,
+      age,
+      castrated,
+      available,
+      coverImage,
+    });
     await newPet.save();
     res.status(201).json(newPet);
   } catch (err) {
@@ -32,8 +49,17 @@ router.post("/", upload.single("image"), async (req, res) => {
 });
 
 router.get("/", async (req, res) => {
-    const pets = await Pet.find();
-    res.json(pets);
-  });
+  const pets = await Pet.find();
+  res.json(pets);
+});
+
+router.delete("/:id", async (req, res) => {
+  try {
+    await Pet.findByIdAndDelete(req.params.id); // ou Book.findByIdAndDelete
+    res.status(200).json({ message: "Pet deletado com sucesso" });
+  } catch (error) {
+    res.status(500).json({ message: "Erro ao deletar pet", error });
+  }
+});
 
 export default router;

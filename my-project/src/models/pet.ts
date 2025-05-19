@@ -1,8 +1,8 @@
 export interface Pet {
   _id: string;
   name: string;
-  type: string;
-  size: string;
+  type: 'cachorro' | 'gato'; 
+  size: 'pequeno' | 'médio' | 'grande'; 
   age: number;
   gender: string;
   castrated: boolean;

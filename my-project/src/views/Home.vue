@@ -19,14 +19,22 @@ const loading = ref(false);
 // Computed para pets filtrados
 const filteredPets = computed(() => {
   return pets.value.filter(pet => {
+    const normalizedPetType = pet.type.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+    const normalizedPetSize = pet.size.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
     // Filtro por tipo
-    if (type.value.length > 0 && !type.value.includes(pet.type)) {
-      return false;
+    if (type.value.length > 0) {
+      const shouldInclude = type.value.some(filterType => 
+        filterType === normalizedPetType
+      );
+      if (!shouldInclude) return false;
     }
     
     // Filtro por tamanho
-    if (size.value.length > 0 && !size.value.includes(pet.size)) {
-      return false;
+    if (size.value.length > 0) {
+      const shouldInclude = size.value.some(filterSize => 
+        filterSize === normalizedPetSize
+      );
+      if (!shouldInclude) return false;
     }
     
     // Filtro por castração
@@ -48,9 +56,9 @@ const filteredPets = computed(() => {
 
 // Função auxiliar para grupo etário
 function getAgeGroup(age: number): string {
-  if (age < 2) return 'puppy';
-  if (age < 5) return 'young';
-  if (age < 10) return 'adult';
+  if (age < 2) return 'filhote';
+  if (age < 5) return 'jovem';
+  if (age < 10) return 'adulto';
   return 'senior';
 }
 
@@ -60,6 +68,7 @@ onMounted(async () => {
   try {
     const response = await axios.get("http://localhost:3000/api/pets");
     pets.value = response.data;
+    console.log(response.data);
   } catch (error) {
     console.error("Erro ao buscar dados:", error);
   } finally {
@@ -118,7 +127,7 @@ const isPetFavorite = (id: string) => {
             v-for="pet in filteredPets" 
             :key="pet._id" 
             :pet="pet"
-            :is-favorite="isPetFavorite(pet.name)"
+            :is-favorite="isPetFavorite(pet._id)"
             @toggle-favorite="toggleFavorite(pet)"
           />
         </div>

@@ -2,9 +2,10 @@ import mongoose from "mongoose";
 
 const PetSchema = new mongoose.Schema({
   name: { type: String, required: true },
-  species: { type: String, required: true },
+  type: { type: String, required: true },
   size: { type: String, required: true },
   age: { type: Number, required: true },
+  castrated: { type: Boolean, required: true },
   available: { type: Boolean, default: true },
   coverImage: { type: String },
 });

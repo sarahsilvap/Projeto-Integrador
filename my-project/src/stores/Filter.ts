@@ -2,25 +2,41 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
 
+type PetType = "cachorro" | "gato";
+type PetSize = "pequeno" | "medio" | "grande";
+type AgeGroup = "filhote" | "jovem" | "adulto" | "idoso";
+
 export const useFilterStore = defineStore("filter", () => {
-  const type = ref<string[]>([]);
-  const size = ref<string[]>([]);
+  // Estado dos filtros
+  const type = ref<PetType[]>([]);
+  const size = ref<PetSize[]>([]);
   const castrated = ref<boolean | null>(null);
-  const age = ref<string[]>([]);
+  const age = ref<AgeGroup[]>([]);
 
-  // Objeto para facilitar o acesso dinâmico
-  const filterState = {
-    type,
-    size,
-    castrated,
-    age,
-  };
-
-  function updateFilter<T extends keyof typeof filterState>(
-    filterType: T,
-    value: (typeof filterState)[T]["value"]
-  ) {
-    filterState[filterType].value = value;
+  function updateFilter(filterType: string, value: any) {
+    switch (filterType) {
+      case "type":
+        type.value = Array.isArray(value)
+          ? value.map((v) => v.toLowerCase())
+          : [];
+        break;
+      case "size":
+        size.value = Array.isArray(value)
+          ? value.map((v) =>
+              v
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "")
+                .toLowerCase()
+            )
+          : [];
+        break;
+      case "castrated":
+        castrated.value = value;
+        break;
+      case "age":
+        age.value = Array.isArray(value) ? value : [];
+        break;
+    }
   }
 
   function resetFilters() {
@@ -30,5 +46,12 @@ export const useFilterStore = defineStore("filter", () => {
     age.value = [];
   }
 
-  return { type, size, castrated, age, updateFilter, resetFilters };
+  return {
+    type,
+    size,
+    castrated,
+    age,
+    updateFilter,
+    resetFilters,
+  };
 });
