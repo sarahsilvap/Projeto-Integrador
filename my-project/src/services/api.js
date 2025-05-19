@@ -10,7 +10,7 @@ const apiClient = axios.create({
 
 //Exporta funções CRUD usando Axios
 
-export default {
+export const api = {
   getPets() {
     return apiClient.get("/");
   },

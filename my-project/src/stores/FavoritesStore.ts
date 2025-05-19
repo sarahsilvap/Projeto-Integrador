@@ -11,8 +11,11 @@ export const useFavoriteStore = defineStore("favorites", {
   }),
   actions: {
     addFavorite(newFavorite: Pet) {
-      const deepCopy = JSON.parse(JSON.stringify(newFavorite));
-      this.favorites.push(deepCopy);
+      const exists = this.favorites.some((a: Pet) => a._id === newFavorite._id);
+      if (!exists) {
+        const deepCopy = JSON.parse(JSON.stringify(newFavorite));
+        this.favorites.push(deepCopy);
+      }
     },
     removeFavorite(id: string) {
       const index = this.favorites.findIndex((a: Pet) => a._id === id);

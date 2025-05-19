@@ -1,65 +1,92 @@
 <script setup lang="ts">
-import { defineProps } from "vue";
-import { Pet } from "../models/pet.js";
+import { defineProps, defineEmits } from "vue";
+import type { Pet } from "../models/pet.js";
 
 const props = defineProps<{
   pet: Pet;
+  isFavorite: boolean;
 }>();
+
+const emit = defineEmits(['toggle-favorite']);
 </script>
 
 <template>
-  <div class="">
-    <div
-      :style="pet.imageUrl ? { backgroundImage: `url(${pet.imageUrl})` } : {}"
-      class="max-w-sm bg-white border border-gray-200 rounded-lg shadow-sm box-border dark:bg-gray-800 dark:border-gray-700"
-    >
-      <div
-        class="max-w-sm bg-white rounded-lg"
+  <div class="pet-card bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
+    <div class="relative">
+      <img
+        class="w-full h-48 object-cover"
+        :src="pet.imageUrl || 'https://images.unsplash.com/photo-1608848461950-0fe51dfc41cb'"
+        :alt="pet.name"
+      />
+      <button
+        @click.stop="emit('toggle-favorite')"
+        class="absolute top-2 right-2 p-2 bg-white/80 rounded-full hover:bg-white transition"
+        aria-label="Favoritar"
       >
-        <a href="#">
-          <img
-            class="rounded-t-lg"
-            src="https://p2.trrsf.com/image/fget/cf/774/0/images.terra.com/2024/03/14/264292112-golden-retriever-1.jpg"
-            alt=""
-          />
-        </a>
-        <div class="p-5">
-          <a href="#">
-            <h5
-              class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white"
-            >
-              {{ pet.name }}
-            </h5>
-          </a>
-          <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">
-            Here are the biggest enterprise technology acquisitions of 2021 so
-            far, in reverse chronological order.
-          </p>
-          <a
-            href="#"
-            class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-[#faa72d] rounded-lg hover:bg-[#fcca4f] focus:ring-4 focus:outline-none focus:ring-[#fedb61]"
-          >
-            Quero adotar
-            <svg
-              class="rtl:rotate-180 w-3.5 h-3.5 ms-2"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 14 10"
-            >
-              <path
-                stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M1 5h12m0 0L9 1m4 4L9 9"
-              />
-            </svg>
-          </a>
-        </div>
+        <svg 
+          xmlns="http://www.w3.org/2000/svg" 
+          class="h-6 w-6" 
+          :class="isFavorite ? 'text-red-500 fill-current' : 'text-gray-400 fill-none stroke-current'"
+          viewBox="0 0 24 24"
+          stroke-width="2"
+        >
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+        </svg>
+      </button>
+    </div>
+    
+    <div class="p-4">
+      <div class="flex justify-between items-start mb-2">
+        <h3 class="text-xl font-bold text-gray-800">{{ pet.name }}</h3>
+        <span 
+          class="px-2 py-1 text-xs font-semibold rounded-full"
+          :class="pet.type === 'dog' ? 'bg-blue-100 text-blue-800' : 'bg-purple-100 text-purple-800'"
+        >
+          {{ pet.type === 'dog' ? 'Cachorro' : 'Gato' }}
+        </span>
       </div>
+      
+      <div class="flex flex-wrap gap-2 mb-3">
+        <span class="text-xs bg-gray-100 px-2 py-1 rounded">
+          {{ pet.size === 'small' ? 'Pequeno' : pet.size === 'medium' ? 'Médio' : 'Grande' }}
+        </span>
+        <span class="text-xs bg-gray-100 px-2 py-1 rounded">
+          {{ pet.castrated ? 'Castrado' : 'Não castrado' }}
+        </span>
+        <span class="text-xs bg-gray-100 px-2 py-1 rounded">
+          {{ pet.age }} anos
+        </span>
+      </div>
+      
+      <p class="text-gray-600 mb-4 line-clamp-2">
+        {{ pet.description || 'Este pet está procurando um lar amoroso!' }}
+      </p>
+      
+      <button
+        class="w-full flex items-center justify-center gap-2 px-4 py-2 bg-[#faa72d] hover:bg-[#fcca4f] text-white rounded-lg transition"
+      >
+        Quero adotar
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+        </svg>
+      </button>
     </div>
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.pet-card {
+  transition: transform 0.2s ease;
+}
+
+.pet-card:hover {
+  transform: translateY(-4px);
+}
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+</style>
