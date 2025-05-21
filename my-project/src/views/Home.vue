@@ -8,6 +8,7 @@ import type { Pet } from "../models/pet.js";
 import Menu from "../components/Menu.vue";
 import Cards from "../components/Cards.vue";
 import SideBar from "../components/SideBar.vue";
+import AddPet from "../components/AddPet.vue";
 
 // Stores
 const filtersStore = useFilterStore();
@@ -94,6 +95,7 @@ const isPetFavorite = (id: string) => {
 
 <template>
   <Menu />
+  <AddPet />
   
   <main class="w-full min-h-screen bg-[#efefef] grid grid-cols-1 lg:grid-cols-5 gap-6 p-5">
     <!-- SideBar -->

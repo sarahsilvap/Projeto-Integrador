@@ -13,7 +13,18 @@ const ageGroups = [
   { value: "idoso", label: "Idoso (10+ anos)" },
 ];
 
-function handleTypeChange(e: Event, petType: 'cachorro' | 'gato') {
+const typeMap = {
+  cachorro: "dog",
+  gato: "cat"
+};
+
+const sizeMap = {
+  pequeno: "small",
+  medio: "medium",
+  grande: "large"
+};
+
+function handleTypeChange(e: Event, petType: 'dog' | 'cat') {
   const target = e.target as HTMLInputElement;
   const newTypes = target.checked
     ? [...type.value, petType]
@@ -21,7 +32,7 @@ function handleTypeChange(e: Event, petType: 'cachorro' | 'gato') {
   updateFilter('type', newTypes);
 }
 
-function handleSizeChange(e: Event, petSize: 'pequeno' | 'medio' | 'grande') {
+function handleSizeChange(e: Event, petSize: 'small' | 'medium' | 'large') {
   const target = e.target as HTMLInputElement;
   const newSizes = target.checked
     ? [...size.value, petSize]
@@ -60,7 +71,7 @@ function handleReset() {
           <input
             type="checkbox"
             :checked="type.includes('cachorro')"
-            @change="(e) => handleTypeChange(e, 'cachorro')"
+            @change="(e) => handleTypeChange(e, 'dog')"
             class="rounded h-4 w-4 text-[#faa72d] focus:ring-[#fcca4f]"
           />
           <span class="text-gray-600">Cachorro</span>
@@ -69,7 +80,7 @@ function handleReset() {
           <input
             type="checkbox"
             :checked="type.includes('gato')"
-            @change="(e) => handleTypeChange(e, 'gato')"
+            @change="(e) => handleTypeChange(e, 'cat')"
             class="rounded h-4 w-4 text-[#faa72d] focus:ring-[#fcca4f]"
           />
           <span class="text-gray-600">Gato</span>
@@ -85,7 +96,7 @@ function handleReset() {
           <input
             type="checkbox"
             :checked="size.includes('pequeno')"
-            @change="(e) => handleSizeChange(e, 'pequeno')"
+            @change="(e) => handleSizeChange(e, 'small')"
             class="rounded h-4 w-4 text-[#faa72d] focus:ring-[#fcca4f]"
           />
           <span class="text-gray-600">Pequeno</span>
@@ -94,7 +105,7 @@ function handleReset() {
           <input
             type="checkbox"
             :checked="size.includes('medio')"
-            @change="(e) => handleSizeChange(e, 'medio')"
+            @change="(e) => handleSizeChange(e, 'medium')"
             class="rounded h-4 w-4 text-[#faa72d] focus:ring-[#fcca4f]"
           />
           <span class="text-gray-600">Médio</span>
@@ -103,7 +114,7 @@ function handleReset() {
           <input
             type="checkbox"
             :checked="size.includes('grande')"
-            @change="(e) => handleSizeChange(e, 'grande')"
+            @change="(e) => handleSizeChange(e, 'large')"
             class="rounded h-4 w-4 text-[#faa72d] focus:ring-[#fcca4f]"
           />
           <span class="text-gray-600">Grande</span>

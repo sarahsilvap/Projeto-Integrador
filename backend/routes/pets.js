@@ -4,6 +4,7 @@ import path from "path";
 import Pet from "../models/Pet.js";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
+import fs from 'fs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -11,21 +12,29 @@ const __dirname = dirname(__filename);
 const router = express.Router();
 
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, "/uploads"),
+  destination: (req, file, cb) => {
+  const uploadPath = path.join(__dirname, '../uploads');
+
+    if (!fs.existsSync(uploadPath)) {
+      fs.mkdirSync(uploadPath, { recursive: true });
+    }
+    
+    cb(null, uploadPath);
+  },
   filename: (req, file, cb) => cb(null, `${Date.now()}-${file.originalname}`),
 });
 
 const upload = multer({ storage });
 
 router.post("/", upload.single("image"), async (req, res) => {
-  const { name, age, castrated, available } = req.body;
+  const { name, age, castrated, available, description } = req.body;
   const { type, size } = req.body;
   // Validação
-  if (!["cachorro", "gato", "Cachorro", "Gato"].includes(type)) {
+  if (!["dog", "cat"].includes(type)) {
     return res.status(400).json({ error: "Tipo inválido" });
   }
 
-  if (!["pequeno", "medio", "grande", "Pequeno", "Medio", "Grande"].includes(size)) {
+  if (!["small", "medium", "large"].includes(size)) {
     return res.status(400).json({ error: "Tamanho inválido" });
   }
 
@@ -38,6 +47,7 @@ router.post("/", upload.single("image"), async (req, res) => {
       size,
       age,
       castrated,
+      description,
       available,
       coverImage,
     });

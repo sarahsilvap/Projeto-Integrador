@@ -6,6 +6,7 @@ const PetSchema = new mongoose.Schema({
   size: { type: String, required: true },
   age: { type: Number, required: true },
   castrated: { type: Boolean, required: true },
+  description: { type: String, required: false },
   available: { type: Boolean, default: true },
   coverImage: { type: String },
 });
