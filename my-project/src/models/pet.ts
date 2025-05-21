@@ -1,12 +1,12 @@
 export interface Pet {
   _id: string;
   name: string;
-  type: 'cachorro' | 'gato'; 
-  size: 'pequeno' | 'médio' | 'grande'; 
+  type: 'dog' | 'cat'; 
+  size: 'small' | 'medium' | 'large'; 
   age: number;
   gender: string;
   castrated: boolean;
-  imageUrl: string;
+  coverImage: string;
   description: string;
   available: boolean;
 }

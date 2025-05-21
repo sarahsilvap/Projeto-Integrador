@@ -26,7 +26,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-router.post("/", upload.single("image"), async (req, res) => {
+router.post("/", upload.single("coverImage"), async (req, res) => {
   const { name, age, castrated, available, description } = req.body;
   const { type, size } = req.body;
   // Validação
@@ -62,6 +62,48 @@ router.get("/", async (req, res) => {
   const pets = await Pet.find();
   res.json(pets);
 });
+
+router.put("/:id", upload.single("coverImage"), async (req, res) => {
+  const { name, age, castrated, available, description, type, size } = req.body;
+
+  if (!["dog", "cat"].includes(type)) {
+    return res.status(400).json({ error: "Tipo inválido" });
+  }
+
+  if (!["small", "medium", "large"].includes(size)) {
+    return res.status(400).json({ error: "Tamanho inválido" });
+  }
+
+  const updatedData = {
+    name,
+    age,
+    castrated,
+    available,
+    description,
+    type,
+    size,
+  };
+
+  if (req.file) {
+    updatedData.coverImage = `/uploads/${req.file.filename}`;
+  }
+
+  try {
+    const updatedPet = await Pet.findByIdAndUpdate(req.params.id, updatedData, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (!updatedPet) {
+      return res.status(404).json({ message: "Pet não encontrado" });
+    }
+
+    res.json(updatedPet);
+  } catch (error) {
+    res.status(500).json({ message: "Erro ao atualizar pet", error });
+  }
+});
+
 
 router.delete("/:id", async (req, res) => {
   try {

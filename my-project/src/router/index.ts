@@ -4,6 +4,7 @@ import NotFound from "../views/NotFound.vue";
 import Home from "../views/Home.vue";
 import Login from "../views/Login.vue";
 import Cadastro from "../views/Cadastro.vue";
+import AdminPetsView from "../views/AdminPetsView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -23,6 +24,10 @@ const router = createRouter({
     {
       component: FavoritesPets,
       path: "/favorites",
+    },
+    {
+      component: AdminPetsView,
+      path: "/adm",
     },
     {
       component: NotFound,

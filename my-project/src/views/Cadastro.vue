@@ -75,7 +75,9 @@ export default {
 <template>
   <div class="auth-container">
     <div class="auth-card">
-      <img :src="Logo" alt="Logo Adote Petz" class="logo-image"/>
+      <router-link to="/">
+        <img :src="Logo" alt="Logo Adote Petz" class="logo-image" />
+      </router-link>
       <h2 class="auth-title">Cadastro</h2>
 
       <!-- Mensagem de erro -->
@@ -144,6 +146,10 @@ export default {
   width: auto;
   cursor: pointer;
   transition: opacity 0.3s;
+}
+
+.logo-image:hover {
+  opacity: 0.8;
 }
 
 .auth-container {

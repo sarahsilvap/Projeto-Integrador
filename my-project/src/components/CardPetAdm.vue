@@ -1,14 +1,12 @@
 <script setup lang="ts">
-import { defineProps, defineEmits } from "vue";
 import type { Pet } from "../models/pet.js";
 import { ref } from 'vue';
 
 const props = defineProps<{
   pet: Pet;
-  isFavorite: boolean;
 }>();
 
-const emit = defineEmits(["toggle-favorite"]);
+const emit = defineEmits(["edit", "delete"]);
 
 const getPetTypeDisplay = (type: string) => {
   const normalizedType = type
@@ -31,12 +29,18 @@ const getPetSizeDisplay = (size: string) => {
   }
 };
 
+const confirmDelete = () => {
+  if (confirm(`Tem certeza que deseja excluir ${props.pet.name}?`)) {
+    emit('delete', props.pet._id);
+  }
+};
+
 const isExpanded = ref(false);
 </script>
 
 <template>
   <div
-    class="pet-card bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 relative flex flex-col"
+    class="pet-card-admin bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 relative flex flex-col"
   >
     <div class="relative">
       <img
@@ -48,29 +52,27 @@ const isExpanded = ref(false);
         "
         :alt="pet.name"
       />
-      <button
-        @click.stop="emit('toggle-favorite')"
-        class="absolute top-2 right-2 p-2 bg-white/80 rounded-full hover:bg-white transition"
-        aria-label="Favoritar"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-6 w-6"
-          :class="
-            isFavorite
-              ? 'text-red-500 fill-current'
-              : 'text-gray-400 fill-none stroke-current'
-          "
-          viewBox="0 0 24 24"
-          stroke-width="2"
+      <!-- Botões de administração -->
+      <div class="absolute top-2 right-2 flex gap-2">
+        <button
+          @click.stop="emit('edit', pet)"
+          class="p-2 bg-white/80 rounded-full hover:bg-white transition"
+          aria-label="Editar"
         >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-          />
-        </svg>
-      </button>
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+          </svg>
+        </button>
+        <button
+          @click.stop="confirmDelete"
+          class="p-2 bg-white/80 rounded-full hover:bg-white transition"
+          aria-label="Excluir"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+          </svg>
+        </button>
+      </div>
     </div>
 
     <div class="p-4 flex flex-col flex-grow">
@@ -124,44 +126,24 @@ const isExpanded = ref(false);
         </div>
       </div>
 
-      <button
-        class="mt-auto w-full flex items-center justify-center gap-2 px-4 py-2 bg-[#2d74be] hover:bg-[#79bbec] text-white rounded-lg transition"
-        :disabled="!pet.available"
-        :class="{ 'opacity-50 cursor-not-allowed': !pet.available }"
-      >
-        {{ pet.available ? "Quero adotar" : "Indisponível" }}
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-4 w-4"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M14 5l7 7m0 0l-7 7m7-7H3"
-          />
-        </svg>
-      </button>
+      <!-- Status de disponibilidade mais destacado -->
+      <div class="mt-auto">
+        <div class="text-center py-2 rounded-lg" 
+             :class="pet.available ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'">
+          {{ pet.available ? "Disponível para adoção" : "Indisponível" }}
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <style scoped>
-.pet-card {
+.pet-card-admin {
   transition: transform 0.2s ease;
-  min-height: 500px; /* ou qualquer altura que faça sentido para seu layout */
+  min-height: 450px;
 }
 
-.pet-card:hover {
+.pet-card-admin:hover {
   transform: translateY(-4px);
-}
-
-.line-clamp-2 {
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
 }
 </style>
