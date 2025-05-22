@@ -6,7 +6,7 @@ import { useFavoriteStore } from "../stores/FavoritesStore";
 import { useFilterStore } from "../stores/Filter";
 import type { Pet } from "../models/pet.js";
 import Menu from "../components/Menu.vue";
-import Cards from "../components/Cards.vue";
+import PetCard from "../components/PetCard.vue";
 import SideBar from "../components/SideBar.vue";
 
 // Stores
@@ -15,6 +15,15 @@ const { type, size, castrated, age } = storeToRefs(filtersStore);
 const { resetFilters } = filtersStore;
 const pets = ref<Pet[]>([]);
 const loading = ref(false);
+
+type AgeGroup = 'filhote' | 'jovem' | 'adulto' | 'senior';
+// Função auxiliar para grupo etário
+function getAgeGroup(age: number): AgeGroup {
+  if (age < 2) return 'filhote';
+  if (age < 5) return 'jovem';
+  if (age < 10) return 'adulto';
+  return 'senior';
+}
 
 // Computed para pets filtrados
 const filteredPets = computed(() => {
@@ -45,7 +54,7 @@ const filteredPets = computed(() => {
     // Filtro por idade
     if (age.value.length > 0) {
       const petAgeGroup = getAgeGroup(pet.age);
-      if (!age.value.includes(petAgeGroup)) {
+      if (!(age.value as string[]).includes(petAgeGroup)) {
         return false;
       }
     }
@@ -53,14 +62,6 @@ const filteredPets = computed(() => {
     return true;
   });
 });
-
-// Função auxiliar para grupo etário
-function getAgeGroup(age: number): string {
-  if (age < 2) return 'filhote';
-  if (age < 5) return 'jovem';
-  if (age < 10) return 'adulto';
-  return 'senior';
-}
 
 // Carregar pets
 onMounted(async () => {
@@ -104,7 +105,7 @@ const isPetFavorite = (id: string) => {
     <!-- Conteúdo principal -->
     <div class="lg:col-span-4">
       <div class="col-span-4 text-primary text-5xl text-center bg-[#efefef] p-6">
-        <h1>🐶 Animais para adoção 😺</h1>
+        <h1>Animais para adoção</h1>
       </div>
 
       <div v-if="loading" class="text-center py-12">
@@ -116,14 +117,14 @@ const isPetFavorite = (id: string) => {
           <p class="text-xl mb-4">Nenhum pet encontrado com os filtros selecionados.</p>
           <button 
             @click="resetFilters"
-            class="px-4 py-2 bg-[#faa72d] text-white rounded-lg hover:bg-[#fcca4f] transition"
+            class="px-4 py-2 bg-[#fd6b67] hover:bg-[#fe827e] text-white rounded-lg hover:bg-[#fcca4f] transition"
           >
             Limpar filtros
           </button>
         </div>
 
         <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          <Cards 
+          <PetCard 
             v-for="pet in filteredPets" 
             :key="pet._id" 
             :pet="pet"

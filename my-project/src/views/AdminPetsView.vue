@@ -1,23 +1,28 @@
 <template>
   <div class="admin-container p-4">
-    <h1 class="text-2xl font-bold mb-4">Painel de Administração - Pets</h1>
+    <div class="flex items-center justify-between mb-4">
+      <h1 class="text-2xl font-bold">Painel de Administração</h1>
+      <router-link to="/">
+        <img :src="logo2" alt="Logo Adote Petz" class="h-12 mr-4" />
+      </router-link>
+    </div>
 
     <div class="flex justify-between items-center mb-5">
       <button
-      @click="openAddModal"
-      class="bg-green-500 text-white px-4 py-2 rounded"
+        @click="openAddModal"
+        class="bg-green-500 text-white px-4 py-2 rounded"
       >
-      Adicionar Novo Pet
-    </button>
-    
-    <input
-    type="text"
-    placeholder="Pesquisar Pet"
-    class="p-2 w-94 h-1/2 rounded-md border border-gray-300"
-    @input="handleSearch"
-    :value="query"
-    />
-  </div>
+        Adicionar Novo Pet
+      </button>
+
+      <input
+        type="text"
+        placeholder="Pesquisar Pet"
+        class="p-2 w-94 h-1/2 rounded-md border border-gray-300"
+        @input="handleSearch"
+        :value="query"
+      />
+    </div>
 
     <div
       v-if="pets.length"
@@ -51,6 +56,7 @@ import CardPetAdm from "../components/CardPetAdm.vue";
 import ModalAddEditPet from "../components/ModalAddEditPet.vue";
 import type { Pet } from "../models/pet";
 import { computed } from "vue";
+import logo2 from "../assets/logo2.png";
 
 const filteredPets = computed(() =>
   pets.value.filter((pet) =>

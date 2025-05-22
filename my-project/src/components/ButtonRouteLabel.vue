@@ -6,7 +6,7 @@ const router = useRouter();
 
 const buttonRouteLabel = computed(() => {
   return router.currentRoute.value.path === "/" ?
-    "Favoritos" : "Lista de Personagens"
+    "Favoritos" : "Home"
 })
 
 const changePage = () => {
@@ -20,7 +20,7 @@ const changePage = () => {
 </script>
 
 <template>
-    <button class="ml-2 text-purple-600 hover:text-purple-400 cursor-pointer" @click="changePage">{{ buttonRouteLabel }}</button>
+    <button class="text-gray-800 font-medium hover:text-[#fb6d67] hover:cursor-pointer" @click="changePage">{{ buttonRouteLabel }}</button>
 </template>
 
 <style scoped>

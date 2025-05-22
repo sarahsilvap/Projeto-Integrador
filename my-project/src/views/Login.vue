@@ -1,5 +1,7 @@
 <script>
 import Logo from "../assets/logo.png";
+import axios from "axios";
+
 export default {
   name: "LoginPage",
   data() {
@@ -7,12 +9,31 @@ export default {
       email: "",
       password: "",
       Logo: Logo,
+      errorMessage: null,
+      isLoading: false,
     };
   },
   methods: {
-    handleLogin() {
-      // Lógica de login aqui
-      console.log("Login attempt with:", this.email, this.password);
+    async handleLogin() {
+      this.errorMessage = null;
+      this.isLoading = true;
+      try {
+        const response = await axios.post('http://localhost:3000/api/auth/login', {
+          email: this.email,
+          password: this.password
+        });
+
+        // Exemplo: salva token no localStorage (ajuste conforme seu fluxo)
+        localStorage.setItem('token', response.data.token);
+
+        // Redireciona para outra página após login, ex:
+        this.$router.push('/');
+      } catch (error) {
+        console.error("Erro no login:", error);
+        this.errorMessage = error.response?.data?.error || 'Erro ao tentar logar.';
+      } finally {
+        this.isLoading = false;
+      }
     },
   },
 };
@@ -25,6 +46,7 @@ export default {
         <img :src="Logo" alt="Logo Adote Petz" class="logo-image" />
       </router-link>
       <h2 class="auth-title">Login</h2>
+      <p class="p" v-if="errorMessage" style="color: red; margin-bottom: 10px;">{{ errorMessage }}</p>
       <form @submit.prevent="handleLogin" class="auth-form">
         <div class="form-group">
           <label for="email">E-mail</label>
@@ -34,7 +56,7 @@ export default {
           <label for="password">Senha</label>
           <input type="password" id="password" v-model="password" placeholder="Digite sua senha" required />
         </div>
-        <button type="submit" class="auth-button">Entrar</button>
+        <button type="submit" class="auth-button" :disabled="isLoading">{{ isLoading ? 'Entrando...' : 'Entrar' }}</button>
       </form>
       <p class="auth-link">
         Não tem uma conta? <router-link to="/cadastro">Cadastre-se</router-link>
@@ -79,6 +101,12 @@ export default {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   background-color: #ffffff;
   border: 1px solid #e0e0e0;
+}
+
+.p {
+  text-align: center;
+  margin-bottom: 25px;
+  margin-top: 15px;
 }
 
 .auth-title {

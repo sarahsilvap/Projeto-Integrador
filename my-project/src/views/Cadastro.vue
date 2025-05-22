@@ -2,6 +2,7 @@
 import Logo from "../assets/logo.png";
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { authService } from '../services/auth'; 
 
 export default {
   name: "RegisterPage",
@@ -33,29 +34,17 @@ export default {
       errorMessage.value = "";
       
       try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}api/auth/register`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            name: form.value.name,
-            email: form.value.email,
-            password: form.value.password
-          }),
+        // usa o authService para registrar
+        await authService.register({
+          name: form.value.name,
+          email: form.value.email,
+          password: form.value.password,
         });
-        
-        const data = await response.json();
-        
-        if (!response.ok) {
-          throw new Error(data.message || 'Erro no cadastro');
-        }
-        
         router.push('/login?newUser=true');
-        
       } catch (error) {
         console.error('Registration error:', error);
-        errorMessage.value = error.message || 'Erro ao cadastrar. Tente novamente.';
+        // tenta pegar mensagem do erro do axios, fallback para mensagem genérica
+        errorMessage.value = error.response?.data?.message || error.message || 'Erro ao cadastrar. Tente novamente.';
       } finally {
         isLoading.value = false;
       }
@@ -91,7 +80,7 @@ export default {
           <input
             type="text"
             id="name"
-            v-model="name"
+            v-model="form.name"
             placeholder="Digite seu nome completo"
             required
           />
@@ -101,7 +90,7 @@ export default {
           <input
             type="email"
             id="email"
-            v-model="email"
+            v-model="form.email"
             placeholder="Digite seu e-mail"
             required
           />
@@ -111,7 +100,7 @@ export default {
           <input
             type="password"
             id="password"
-            v-model="password"
+            v-model="form.password"
             placeholder="Digite sua senha"
             required
           />
@@ -121,7 +110,7 @@ export default {
           <input
             type="password"
             id="confirmPassword"
-            v-model="confirmPassword"
+            v-model="form.confirmPassword"
             placeholder="Confirme sua senha"
             required
           />

@@ -1,12 +1,31 @@
 <script setup lang="ts">
 import { defineProps, defineEmits } from "vue";
 import type { Pet } from "../models/pet.js";
-import { ref } from 'vue';
+import { ref } from "vue";
+import { useFavoriteStore } from "../stores/FavoritesStore.js";
+import { computed, nextTick } from "vue";
 
 const props = defineProps<{
   pet: Pet;
-  isFavorite: boolean;
 }>();
+
+const favoritesStore = useFavoriteStore();
+const isFavorite = computed(() => favoritesStore.isFavorite(props.pet._id));
+
+const toggleFavorite = async () => {
+  try {
+    if (isFavorite.value) {
+      await favoritesStore.removeFavorite(props.pet._id);
+    } else {
+      console.log("Antes de adicionar:", isFavorite.value);
+      await favoritesStore.addFavorite(props.pet);
+      console.log("Depois de adicionar:", isFavorite.value);
+      await nextTick();
+    }
+  } catch (error) {
+    console.error("Erro ao atualizar favorito:", error);
+  }
+};
 
 const emit = defineEmits(["toggle-favorite"]);
 
@@ -49,7 +68,7 @@ const isExpanded = ref(false);
         :alt="pet.name"
       />
       <button
-        @click.stop="emit('toggle-favorite')"
+        @click.stop="toggleFavorite"
         class="absolute top-2 right-2 p-2 bg-white/80 rounded-full hover:bg-white transition"
         aria-label="Favoritar"
       >
@@ -107,19 +126,22 @@ const isExpanded = ref(false);
         </div>
 
         <div class="relative">
-          <p class="text-gray-600 mb-4" :class="{ 'line-clamp-2': !isExpanded }">
+          <p
+            class="text-gray-600 mb-4"
+            :class="{ 'line-clamp-2': !isExpanded }"
+          >
             {{
               pet.description
                 ? pet.description
                 : "Este pet está procurando um lar amoroso!"
             }}
           </p>
-          <button 
+          <button
             v-if="pet.description && pet.description.length > 100"
             @click="isExpanded = !isExpanded"
             class="text-[#2d74be] text-sm font-medium hover:underline focus:outline-none"
           >
-            {{ isExpanded ? 'Ver menos' : 'Ver mais' }}
+            {{ isExpanded ? "Ver menos" : "Ver mais" }}
           </button>
         </div>
       </div>

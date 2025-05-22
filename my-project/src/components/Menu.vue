@@ -40,15 +40,22 @@
           </Transition>
         </Menu>
 
-        <a href="#" class="text-gray-800 font-medium hover:text-[#fb6d67]">Favoritos</a>
-        <a href="#" class="text-gray-800 font-medium hover:text-[#fb6d67]">Unidade Petz</a>
+        <ButtonRouteLabel />
+        <a href="#" class="text-gray-800 font-medium hover:text-[#fb6d67]">Doações</a>
       </nav>
 
       <div class="flex items-center gap-4">
         <button class="text-white bg-[#fd6b67] border px-3 py-1 rounded hover:bg-[#fe827e] hover:cursor-pointer">
           Quero adotar
         </button>
-        <router-link to="/login" class="text-gray-800 border px-3 py-1 rounded hover:bg-gray-100 hover:cursor-pointer">
+        <button v-if="isLoggedIn" @click="handleLogout"
+          class="text-gray-800 border px-3 py-1 rounded hover:bg-gray-100 hover:cursor-pointer">
+          Sair
+        </button>
+
+        <!-- Se NÃO estiver logada -->
+        <router-link v-else to="/login"
+          class="text-gray-800 border px-3 py-1 rounded hover:bg-gray-100 hover:cursor-pointer">
           Entrar
         </router-link>
       </div>
@@ -57,10 +64,25 @@
 </template>
 
 <script setup>
+import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 import { Menu, MenuButton, MenuItems, MenuItem } from "@headlessui/vue";
-import { TransitionRoot } from "@headlessui/vue";
 import { Transition } from "vue";
 import logo2 from "../assets/logo2.png";
+import ButtonRouteLabel from "./ButtonRouteLabel.vue";
+
+const isLoggedIn = ref(false);
+const router = useRouter();
+
+onMounted(() => {
+  isLoggedIn.value = !!localStorage.getItem('token');
+});
+
+const handleLogout = () => {
+  localStorage.removeItem('token');
+  isLoggedIn.value = false;
+  router.push('/login');
+};
 
 const itemClass = (active) =>
   `block px-4 py-2 ${active ? "bg-gray-100 text-[#fb6d67]" : "text-gray-800"}`;

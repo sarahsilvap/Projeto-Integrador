@@ -1,4 +1,4 @@
-import Cards from "../components/Cards.vue";
+import PetCard from "../components/PetCard.vue";
 import ButtonRouteLabel from "../components/ButtonRouteLabel.vue";
 import { useFavoriteStore } from '../stores/FavoritesStore';
 import { computed } from "vue";
