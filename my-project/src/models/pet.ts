@@ -1,8 +1,14 @@
+// src/models/pet.ts
+
+export type PetType = 'dog' | 'cat';
+export type PetSize = 'small' | 'medium' | 'large';
+export type AgeGroup = 'filhote' | 'jovem' | 'adulto' | 'idoso';
+
 export interface Pet {
   _id: string;
   name: string;
-  type: 'dog' | 'cat'; 
-  size: 'small' | 'medium' | 'large'; 
+  type: PetType;
+  size: PetSize;
   age: number;
   gender: string;
   castrated: boolean;

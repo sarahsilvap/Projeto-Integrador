@@ -2,7 +2,6 @@
 import axios from "axios";
 import { ref, onMounted, computed } from "vue";
 import { storeToRefs } from 'pinia';
-import { useFavoriteStore } from "../stores/FavoritesStore";
 import { useFilterStore } from "../stores/Filter";
 import type { Pet } from "../models/pet.js";
 import Menu from "../components/Menu.vue";
@@ -76,21 +75,6 @@ onMounted(async () => {
     loading.value = false;
   }
 });
-
-// Lógica de favoritos
-const favoritesStore = useFavoriteStore();
-
-const toggleFavorite = (pet: Pet) => {
-  if (favoritesStore.isFavorite(pet._id)) {
-    favoritesStore.removeFavorite(pet._id);
-  } else {
-    favoritesStore.addFavorite(pet);
-  }
-};
-
-const isPetFavorite = (id: string) => {
-  return favoritesStore.isFavorite(id);
-};
 </script>
 
 <template>
@@ -123,8 +107,6 @@ const isPetFavorite = (id: string) => {
             v-for="pet in filteredPets" 
             :key="pet._id" 
             :pet="pet"
-            :is-favorite="isPetFavorite(pet._id)"
-            @toggle-favorite="toggleFavorite(pet)"
           />
         </div>
       </div>

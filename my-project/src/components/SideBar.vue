@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { useFilterStore } from '../stores/Filter';
 import { storeToRefs } from 'pinia';
+import type { PetType, PetSize, AgeGroup } from '../models/pet';
+
 
 const filtersStore = useFilterStore();
 const { type, size, castrated, age } = storeToRefs(filtersStore);
 const { updateFilter, resetFilters } = filtersStore;
 
-const ageGroups = [
+const ageGroups: { value: AgeGroup; label: string }[] = [
   { value: "filhote", label: "Filhote (0-2 anos)" },
   { value: "jovem", label: "Jovem (2-5 anos)" },
   { value: "adulto", label: "Adulto (5-10 anos)" },
@@ -24,7 +26,7 @@ const sizeMap = {
   grande: "large"
 };
 
-function handleTypeChange(e: Event, petType: 'dog' | 'cat') {
+function handleTypeChange(e: Event, petType: PetType) {
   const target = e.target as HTMLInputElement;
   const newTypes = target.checked
     ? [...type.value, petType]
@@ -32,7 +34,7 @@ function handleTypeChange(e: Event, petType: 'dog' | 'cat') {
   updateFilter('type', newTypes);
 }
 
-function handleSizeChange(e: Event, petSize: 'small' | 'medium' | 'large') {
+function handleSizeChange(e: Event, petSize: PetSize) {
   const target = e.target as HTMLInputElement;
   const newSizes = target.checked
     ? [...size.value, petSize]
@@ -40,7 +42,7 @@ function handleSizeChange(e: Event, petSize: 'small' | 'medium' | 'large') {
   updateFilter("size", newSizes);
 }
 
-function handleAgeChange(e: Event, ageGroup: string) {
+function handleAgeChange(e: Event, ageGroup: AgeGroup) {
   const target = e.target as HTMLInputElement;
   const newAges = target.checked
     ? [...age.value, ageGroup]
@@ -70,7 +72,7 @@ function handleReset() {
         <label class="flex items-center gap-3 cursor-pointer">
           <input
             type="checkbox"
-            :checked="type.includes('cachorro')"
+            :checked="type.includes('dog')"
             @change="(e) => handleTypeChange(e, 'dog')"
             class="rounded h-4 w-4 text-[#faa72d] focus:ring-[#fcca4f]"
           />
@@ -79,7 +81,7 @@ function handleReset() {
         <label class="flex items-center gap-3 cursor-pointer">
           <input
             type="checkbox"
-            :checked="type.includes('gato')"
+            :checked="type.includes('cat')"
             @change="(e) => handleTypeChange(e, 'cat')"
             class="rounded h-4 w-4 text-[#faa72d] focus:ring-[#fcca4f]"
           />
@@ -95,7 +97,7 @@ function handleReset() {
         <label class="flex items-center gap-3 cursor-pointer">
           <input
             type="checkbox"
-            :checked="size.includes('pequeno')"
+            :checked="size.includes('small')"
             @change="(e) => handleSizeChange(e, 'small')"
             class="rounded h-4 w-4 text-[#faa72d] focus:ring-[#fcca4f]"
           />
@@ -104,7 +106,7 @@ function handleReset() {
         <label class="flex items-center gap-3 cursor-pointer">
           <input
             type="checkbox"
-            :checked="size.includes('medio')"
+            :checked="size.includes('medium')"
             @change="(e) => handleSizeChange(e, 'medium')"
             class="rounded h-4 w-4 text-[#faa72d] focus:ring-[#fcca4f]"
           />
@@ -113,7 +115,7 @@ function handleReset() {
         <label class="flex items-center gap-3 cursor-pointer">
           <input
             type="checkbox"
-            :checked="size.includes('grande')"
+            :checked="size.includes('large')"
             @change="(e) => handleSizeChange(e, 'large')"
             class="rounded h-4 w-4 text-[#faa72d] focus:ring-[#fcca4f]"
           />

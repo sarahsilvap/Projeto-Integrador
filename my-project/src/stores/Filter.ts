@@ -1,10 +1,7 @@
 // stores/Filter.ts
 import { defineStore } from "pinia";
 import { ref } from "vue";
-
-type PetType = "cachorro" | "gato";
-type PetSize = "pequeno" | "medio" | "grande";
-type AgeGroup = "filhote" | "jovem" | "adulto" | "idoso";
+import type { PetType, PetSize, AgeGroup } from '../models/pet';
 
 export const useFilterStore = defineStore("filter", () => {
   // Estado dos filtros
