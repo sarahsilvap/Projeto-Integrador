@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from "vue-router";
-import FavoritesPets from "../views/FavoritesPets.vue";
 import NotFound from "../views/NotFound.vue";
 import Home from "../views/Home.vue";
 import Login from "../views/Login.vue";
@@ -20,10 +19,6 @@ const router = createRouter({
     {
       component: Cadastro,
       path: "/cadastro",
-    },
-    {
-      component: FavoritesPets,
-      path: "/favorites",
     },
     {
       component: AdminPetsView,

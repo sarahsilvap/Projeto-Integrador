@@ -101,12 +101,7 @@ const isPetFavorite = (id: string) => {
     <div class="lg:col-span-1">
       <SideBar />
     </div>
-    
-    <!-- Conteúdo principal -->
     <div class="lg:col-span-4">
-      <div class="col-span-4 text-primary text-5xl text-center bg-[#efefef] p-6">
-        <h1>Animais para adoção</h1>
-      </div>
 
       <div v-if="loading" class="text-center py-12">
         <span class="animate-pulse text-lg">Carregando pets...</span>

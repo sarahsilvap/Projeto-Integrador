@@ -2,32 +2,28 @@
 import { defineProps, defineEmits } from "vue";
 import type { Pet } from "../models/pet.js";
 import { ref } from "vue";
-import { useFavoriteStore } from "../stores/FavoritesStore.js";
 import { computed, nextTick } from "vue";
+import { useRouter } from 'vue-router';
+const router = useRouter();
+
+const openAdoptionForm = () => {
+  const isLoggedIn = !!localStorage.getItem('token');
+
+  if (!props.pet.available) return;
+
+  if (isLoggedIn) {
+    window.open(
+      "https://docs.google.com/forms/d/e/1FAIpQLSfL2wEonTPvQfj7hrZrBFR8tzwU9Hy1mVKi0XZxl5LI5vBfVw/viewform?usp=dialog",
+      "_blank"
+    );
+  } else {
+    router.push("/login");
+  }
+};
 
 const props = defineProps<{
   pet: Pet;
 }>();
-
-const favoritesStore = useFavoriteStore();
-const isFavorite = computed(() => favoritesStore.isFavorite(props.pet._id));
-
-const toggleFavorite = async () => {
-  try {
-    if (isFavorite.value) {
-      await favoritesStore.removeFavorite(props.pet._id);
-    } else {
-      console.log("Antes de adicionar:", isFavorite.value);
-      await favoritesStore.addFavorite(props.pet);
-      console.log("Depois de adicionar:", isFavorite.value);
-      await nextTick();
-    }
-  } catch (error) {
-    console.error("Erro ao atualizar favorito:", error);
-  }
-};
-
-const emit = defineEmits(["toggle-favorite"]);
 
 const getPetTypeDisplay = (type: string) => {
   const normalizedType = type
@@ -67,29 +63,6 @@ const isExpanded = ref(false);
         "
         :alt="pet.name"
       />
-      <button
-        @click.stop="toggleFavorite"
-        class="absolute top-2 right-2 p-2 bg-white/80 rounded-full hover:bg-white transition"
-        aria-label="Favoritar"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-6 w-6"
-          :class="
-            isFavorite
-              ? 'text-red-500 fill-current'
-              : 'text-gray-400 fill-none stroke-current'
-          "
-          viewBox="0 0 24 24"
-          stroke-width="2"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-          />
-        </svg>
-      </button>
     </div>
 
     <div class="p-4 flex flex-col flex-grow">
@@ -150,6 +123,7 @@ const isExpanded = ref(false);
         class="mt-auto w-full flex items-center justify-center gap-2 px-4 py-2 bg-[#2d74be] hover:bg-[#79bbec] text-white rounded-lg transition"
         :disabled="!pet.available"
         :class="{ 'opacity-50 cursor-not-allowed': !pet.available }"
+        @click="openAdoptionForm"
       >
         {{ pet.available ? "Quero adotar" : "Indisponível" }}
         <svg
@@ -174,7 +148,7 @@ const isExpanded = ref(false);
 <style scoped>
 .pet-card {
   transition: transform 0.2s ease;
-  min-height: 500px; /* ou qualquer altura que faça sentido para seu layout */
+  min-height: 500px; 
 }
 
 .pet-card:hover {

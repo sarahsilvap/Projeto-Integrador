@@ -1,11 +1,6 @@
 // src/services/api.ts
 import axios, { AxiosInstance, AxiosResponse } from "axios";
 import { Pet } from "../models/pet";
-import {
-  ApiResponse,
-  FavoriteResponse,
-  FavoritesListResponse,
-} from "../models/apiResponse";
 
 // Cria instância do Axios com URL base da API
 const apiClient: AxiosInstance = axios.create({
@@ -47,19 +42,5 @@ export const api = {
 
   deletePet(id: string): Promise<AxiosResponse<void>> {
     return apiClient.delete(`/pets/${id}`);
-  },
-
-  // Funções para os favoritos
-  async getFavorites(): Promise<FavoritesListResponse> {
-    const response = await apiClient.get<FavoritesListResponse>("/favorites");
-    return response.data; // response.data é do tipo FavoritesListResponse
-  },
-
-  addFavorite(petId: string) {
-    return apiClient.post(`/favorites/${petId}`);
-  },
-
-  removeFavorite(petId: string): Promise<AxiosResponse<void>> {
-    return apiClient.delete(`/favorites/${petId}`);
   },
 };

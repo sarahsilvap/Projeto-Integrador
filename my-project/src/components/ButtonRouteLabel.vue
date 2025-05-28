@@ -6,12 +6,12 @@ const router = useRouter();
 
 const buttonRouteLabel = computed(() => {
   return router.currentRoute.value.path === "/" ?
-    "Favoritos" : "Home"
+    "Doações" : "Home"
 })
 
 const changePage = () => {
   if (router.currentRoute.value.path === "/") {
-    router.push("/favorites");
+    router.push("/doacao");
   } else {
     router.push("/");
   }
