@@ -1,6 +1,8 @@
 // src/services/auth.ts
 import axios from "axios";
-const API_URL = "http://localhost:3000/api/auth";
+const API_URL = import.meta.env.VITE_API_BASE_URL
+    ? `${import.meta.env.VITE_API_BASE_URL}/auth`
+    : "http://localhost:3000/api/auth";
 export const authService = {
     register(data) {
         return axios.post(`${API_URL}/register`, data);
