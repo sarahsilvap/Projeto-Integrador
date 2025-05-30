@@ -1,9 +1,9 @@
 <template>
   <header class="bg-white shadow-md z-10 relative">
     <div class="flex items-center justify-between px-6 py-4">
-      <div class="ml-6">
-        <img :src="logo2" alt="Logo Adote Petz" class="h-12 mr-4" />
-      </div>
+      <router-link to="/">
+        <img :src="logo2" alt="Logo Adote Petz" class="logo-image h-12 mr-4"/>
+      </router-link>
 
       <nav class="flex gap-6 items-center">
         <Menu as="div" class="relative">
@@ -83,3 +83,10 @@ const handleLogout = () => {
 const itemClass = (active) =>
   `block px-4 py-2 ${active ? "bg-gray-100 text-[#fb6d67]" : "text-gray-800"}`;
 </script>
+
+<style scoped>
+.logo-image {
+  display: block;
+  cursor: pointer;
+  transition: opacity 0.3s;
+}</style>
