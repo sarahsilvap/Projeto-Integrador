@@ -1,7 +1,6 @@
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { Menu, MenuButton, MenuItems, MenuItem } from "@headlessui/vue";
-import { Transition } from "vue";
 import logo2 from "../assets/logo2.png";
 import ButtonRouteLabel from "./ButtonRouteLabel.vue";
 const isLoggedIn = ref(false);
@@ -187,10 +186,6 @@ var __VLS_3;
 // @ts-ignore
 const __VLS_36 = __VLS_asFunctionalComponent(ButtonRouteLabel, new ButtonRouteLabel({}));
 const __VLS_37 = __VLS_36({}, ...__VLS_functionalComponentArgsRest(__VLS_36));
-__VLS_asFunctionalElement(__VLS_intrinsicElements.a, __VLS_intrinsicElements.a)({
-    href: "#",
-    ...{ class: "text-gray-800 font-medium hover:text-[#fb6d67]" },
-});
 __VLS_asFunctionalElement(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({
     ...{ class: "flex items-center gap-4" },
 });
@@ -255,9 +250,6 @@ else {
 /** @type {__VLS_StyleScopedClasses['p-1']} */ ;
 /** @type {__VLS_StyleScopedClasses['text-sm']} */ ;
 /** @type {__VLS_StyleScopedClasses['text-gray-800']} */ ;
-/** @type {__VLS_StyleScopedClasses['text-gray-800']} */ ;
-/** @type {__VLS_StyleScopedClasses['font-medium']} */ ;
-/** @type {__VLS_StyleScopedClasses['hover:text-[#fb6d67]']} */ ;
 /** @type {__VLS_StyleScopedClasses['flex']} */ ;
 /** @type {__VLS_StyleScopedClasses['items-center']} */ ;
 /** @type {__VLS_StyleScopedClasses['gap-4']} */ ;

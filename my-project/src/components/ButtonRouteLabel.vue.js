@@ -7,7 +7,7 @@ const buttonRouteLabel = computed(() => {
 });
 const changePage = () => {
     if (router.currentRoute.value.path === "/") {
-        router.push("/doacao");
+        router.push("/donation");
     }
     else {
         router.push("/");

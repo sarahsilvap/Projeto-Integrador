@@ -6,7 +6,10 @@ export default defineConfig({
   plugins: [vue()],
   server: {
     proxy: {
-      '/api': 'http://localhost:3000',
+      "/api": "http://localhost:3000",
     },
+  },
+  esbuild: {
+    target: "esnext", // para suportar top-level await
   },
 });

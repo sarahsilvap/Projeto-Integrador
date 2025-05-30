@@ -41,7 +41,7 @@
         </Menu>
 
         <ButtonRouteLabel />
-        <a href="#" class="text-gray-800 font-medium hover:text-[#fb6d67]">Doações</a>
+        
       </nav>
 
       <div class="flex items-center gap-4">
@@ -67,7 +67,6 @@
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { Menu, MenuButton, MenuItems, MenuItem } from "@headlessui/vue";
-import { Transition } from "vue";
 import logo2 from "../assets/logo2.png";
 import ButtonRouteLabel from "./ButtonRouteLabel.vue";
 

@@ -4,6 +4,7 @@ import Home from "../views/Home.vue";
 import Login from "../views/Login.vue";
 import Cadastro from "../views/Cadastro.vue";
 import AdminPetsView from "../views/AdminPetsView.vue";
+import Doacao from "../views/Doacao.vue";
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
     routes: [
@@ -22,6 +23,10 @@ const router = createRouter({
         {
             component: AdminPetsView,
             path: "/adm",
+        },
+        {
+            component: Doacao,
+            path: "/doacao",
         },
         {
             component: NotFound,
