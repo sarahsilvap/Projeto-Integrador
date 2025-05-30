@@ -45,9 +45,6 @@
       </nav>
 
       <div class="flex items-center gap-4">
-        <button class="text-white bg-[#fd6b67] border px-3 py-1 rounded hover:bg-[#fe827e] hover:cursor-pointer">
-          Quero adotar
-        </button>
         <button v-if="isLoggedIn" @click="handleLogout"
           class="text-gray-800 border px-3 py-1 rounded hover:bg-gray-100 hover:cursor-pointer">
           Sair
@@ -55,8 +52,8 @@
 
         <!-- Se NÃO estiver logada -->
         <router-link v-else to="/login"
-          class="text-gray-800 border px-3 py-1 rounded hover:bg-gray-100 hover:cursor-pointer">
-          Entrar
+          class="text-white bg-[#fd6b67] border px-3 py-1 rounded hover:bg-[#fe827e] hover:cursor-pointer">
+          Quero adotar
         </router-link>
       </div>
     </div>

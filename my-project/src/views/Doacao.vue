@@ -1,10 +1,5 @@
 <template>
-  <nav class="menu">
-      <router-link to="/" class="home-link">
-        <span>← Voltar à Página Inicial</span>
-      </router-link>
-      <h1 class="site-title">Adote um Amigo</h1>
-    </nav>
+ <Menu />
   <div class="adoption-container">
     <div class="adoption-card">
       <h1>Adote um Amigo Peludo!</h1>
@@ -39,6 +34,9 @@
 import Menu from "../components/Menu.vue";
 export default {
   name: "AdoptionDonation",
+  components: {
+    Menu,
+  },
 };
 </script>
 
