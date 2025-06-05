@@ -1,38 +1,43 @@
 <script>
 import Logo from "../assets/logo.png";
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
-import { authService } from '../services/auth'; 
+import { ref } from "vue";
+import { useRouter } from "vue-router";
+import { authService } from "../services/auth";
 
 export default {
   name: "RegisterPage",
   setup() {
     const router = useRouter();
-    
+
     const form = ref({
-      name: '',
-      email: '',
-      password: '',
-      confirmPassword: ''
+      name: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
     });
-    
+
     const isLoading = ref(false);
-    const errorMessage = ref('');
-    
+    const errorMessage = ref("");
+
     const handleRegister = async () => {
       if (form.value.password !== form.value.confirmPassword) {
-        errorMessage.value = 'As senhas não coincidem';
+        errorMessage.value = "As senhas não coincidem";
         return;
       }
-      
+
       if (!form.value.name || !form.value.email || !form.value.password) {
-        errorMessage.value = 'Preencha todos os campos!';
+        errorMessage.value = "Preencha todos os campos!";
         return;
       }
-      
+
+      if (form.value.password.length < 6) {
+        errorMessage.value = "A senha deve ter pelo menos 6 caracteres";
+        return;
+      }
+
       isLoading.value = true;
       errorMessage.value = "";
-      
+
       try {
         // usa o authService para registrar
         await authService.register({
@@ -40,24 +45,31 @@ export default {
           email: form.value.email,
           password: form.value.password,
         });
-        router.push('/login?newUser=true');
+        router.push("/login?newUser=true");
       } catch (error) {
-        console.error('Registration error:', error);
-        // tenta pegar mensagem do erro do axios, fallback para mensagem genérica
-        errorMessage.value = error.response?.data?.message || error.message || 'Erro ao cadastrar. Tente novamente.';
+        // Aqui pega a mensagem do backend
+        if (
+          error.response &&
+          error.response.data &&
+          error.response.data.error
+        ) {
+          errorMessage.value = error.response.data.error;
+        } else {
+          errorMessage.value = "Erro inesperado. Tente novamente.";
+        }
       } finally {
         isLoading.value = false;
       }
     };
-    
+
     return {
       Logo,
       form,
       isLoading,
       errorMessage,
-      handleRegister
+      handleRegister,
     };
-  }
+  },
 };
 </script>
 

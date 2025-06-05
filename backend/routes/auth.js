@@ -7,28 +7,31 @@ const router = express.Router()
 
 router.post('/register', async (req, res) => {
   try {
+    console.log('BODY recebido no register:', req.body);
+    
     const { email, password, name } = req.body
 
-    if (!email || !password) {
-      return res.status(400).send({ error: 'Email e senha são obrigatórios' })
-    }
+    console.log('Recebido no register:', { email, password, name })
 
-    // Verifica se usuário já existe
     const existingUser = await User.findOne({ email })
     if (existingUser) {
       return res.status(400).send({ error: 'Usuário já cadastrado' })
     }
 
-    // Cria e salva o usuário (o hash da senha já é feito no pre-save do model)
     const user = new User({ email, password, name })
+    console.log('User antes do save:', user);
+
+    console.log('Salvando usuário:', user)
     await user.save()
+    console.log('Usuário salvo!')
 
     res.status(201).send({ message: 'Usuário criado com sucesso' })
   } catch (err) {
-    console.error(err)
+    console.error('Erro no register:', err)
     res.status(500).send({ error: 'Erro no servidor' })
   }
 })
+
 
 router.post('/login', async (req, res) => {
   try {

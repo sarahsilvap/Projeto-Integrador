@@ -29,12 +29,20 @@ const userSchema = new mongoose.Schema({
 
 // Criptografa a senha antes de salvar
 userSchema.pre('save', async function (next) {
-  if (this.isModified('password'))  return next(); 
+  console.log('Hook pre-save ativado, senha atual:', this.password);
+  
+  if (!this.isModified('password')) {
+    console.log('Senha NÃO modificada, pulando hash');
+    return next();
+  }
+
+  console.log('Senha modificada, vamos fazer hash:', this.password);
 
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
+  console.log('Senha criptografada:', this.password);
   next();
-})
+});
 
 // Método de instância para comparar senhas
 userSchema.methods.comparePassword = function (candidatePassword) {

@@ -5,7 +5,6 @@ import path from "path";
 import { dirname } from "path";
 import { connectMongo } from "./lib/db.js";
 import petsRoutes from "./routes/pets.js";
-import favoritesRoutes from "./routes/favorites.js";
 import authRoutes from './routes/auth.js'
 
 const __filename = fileURLToPath(import.meta.url);
@@ -20,8 +19,6 @@ app.use(express.json());
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.use("/api/pets", petsRoutes);
-
-app.use('/api/favorites', favoritesRoutes);
 
 app.use('/api/auth', authRoutes);
 
