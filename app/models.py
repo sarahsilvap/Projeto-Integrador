@@ -37,15 +37,15 @@ class User(models.Model):
 class Asset(models.Model):
     name = models.CharField(max_length=255)
     departament = models.CharField(max_length=100,choices=DEPARTAMENTS)
-    tag_number = models.IntegerField()
-    serial_number = models.CharField(max_length=12)
+    tag_number = models.IntegerField(unique=True, blank=True)
+    serial_number = models.CharField(blank=True)
     
     def __str__(self):
         return self.name
     
 class Status(models.Model):
     name = models.CharField(max_length=100, choices=STATUS)
-    date_of_modification = models.DateField()
+    date_of_modification = models.DateField(auto_now=True)
     changed_by_FK = models.ForeignKey(User, related_name='Status_changed_by_FK', on_delete=models.CASCADE)
     
     def __str__(self):
@@ -56,7 +56,7 @@ class Request(models.Model):
     title = models.CharField(max_length=100)
     description = models.CharField()
     asset_FK = models.ForeignKey(Asset, related_name='Request_asset_FK', on_delete=models.CASCADE)
-    creation_date = models.DateField()
+    creation_date = models.DateField(auto_now=True)
     closing_date = models.DateField()
     status_FK = models.ForeignKey(Status, related_name='Request_user_FK', on_delete=models.CASCADE)
     
