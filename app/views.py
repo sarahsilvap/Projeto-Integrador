@@ -1,6 +1,12 @@
+
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework.viewsets import ModelViewSet
+from django.shortcuts import get_object_or_404
+
 from .models import *
 from .serializers import *
-from rest_framework.viewsets import ModelViewSet
+
 
 class UserView(ModelViewSet):    
     queryset = User.objects.all()
@@ -18,6 +24,17 @@ class RequestView(ModelViewSet):
     queryset = Request.objects.all()
     serializer_class = RequestSerializer
 
-class PhotoView(ModelViewSet):    
-    queryset = Photo.objects.all()
-    serializer_class = PhotoSerializer
+@api_view(['POST'])
+def upload_image(request):
+    image_file = request.FILES.get('photo')
+    id_request = request.POST.get('request_id')
+
+    if not image_file or not id_request:
+        return Response({"erro": "Dados incompletos"}, status=400)
+
+    request_obj = get_object_or_404(Request, id=id_request)
+    nova_foto = Photo(photo=image_file, request_FK=request_obj)
+    nova_foto.save()
+    return Response({"mensagem": "Imagem enviada com sucesso"})
+
+

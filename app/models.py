@@ -20,7 +20,7 @@ DEPARTAMENTS = [
 
 STATUS = [
     ('OPEN', 'Em Aberto'),
-    ('IN_PROGRESS', 'Em andamento')
+    ('IN_PROGRESS', 'Em andamento'),
     ('CLOSED', 'Fechado'),
 ]
 
@@ -64,7 +64,7 @@ class Request(models.Model):
         return self.title
 
 class Photo(models.Model):
-    photo = models.ImageField(upload_to='photos/')
+    photo = models.ImageField(upload_to='fotos/')
     request_FK = models.ForeignKey(Request, related_name='Photo_request_FK', on_delete=models.CASCADE)
     
 
