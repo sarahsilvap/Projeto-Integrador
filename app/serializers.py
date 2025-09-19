@@ -25,17 +25,31 @@ class RequestSerializer(serializers.ModelSerializer):
         fields = '__all__'
         many = True
         
-    def to_representation(self, instance):
-        data = super().to_representation(instance)
-        user = self.context['request'].user
-        if not user.is_staff:
-            data.pop('closing_date', None)
-        return data
-    def validate(self, attrs):
-        user = self.context['request'].user
-        if not user.is_staff and 'closing_date' in attrs:
-            raise serializers.ValidationError("Você não tem permissão para definir a data de fechamento.")
-        return attrs
+    #Ao crirar um Request, o User é definido automaticamente por aquele que o criou
+    def create(self, validated_data):
+        # Define status como OPEN ao criar
+        validated_data['status_FK'] = Status.objects.get(name='OPEN')
+        return super().create(validated_data)
+    
+    
+    def update(self, instance, validated_data):
+            user = self.context['request'].user
+            status_changed = 'status_FK' in validated_data and validated_data['status_FK'] != instance.status_FK
+
+            if status_changed and not user.is_staff:
+                raise serializers.ValidationError("Você não tem permissão para alterar o status.")
+
+            updated_instance = super().update(instance, validated_data)
+
+            # Se o status foi alterado, registra no histórico
+            if status_changed:
+                StatusHistory.objects.create(
+                    request_FK=updated_instance,
+                    status_FK=updated_instance.status_FK,
+                    changed_by_FK=user
+                )
+
+            return updated_instance
 
 class PhotoSerializer(serializers.ModelSerializer):
     class Meta:

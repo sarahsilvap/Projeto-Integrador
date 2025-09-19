@@ -7,7 +7,6 @@ from django.shortcuts import get_object_or_404
 from .models import *
 from .serializers import *
 
-
 class UserView(ModelViewSet):    
     queryset = CustomUser.objects.all()
     serializer_class = UserSerializer
@@ -19,10 +18,22 @@ class AssetView(ModelViewSet):
 class StatusView(ModelViewSet):    
     queryset = Status.objects.all()
     serializer_class = StatusSerializer
+    
+    #user_FK seja preenchido automaticamente com o usuário autenticado ao criar
+    def perform_create(self, serializer):
+        serializer.save(changed_by_FK=self.request.user)
+
+    #user_FK seja preenchido automaticamente com o usuário autenticado ao atualizar status
+    def perform_update(self, serializer):
+        serializer.save(changed_by_FK=self.request.user)
 
 class RequestView(ModelViewSet):    
     queryset = Request.objects.all()
     serializer_class = RequestSerializer
+    
+    #user_FK seja preenchido automaticamente com o usuário autenticado
+    def perform_create(self, serializer):
+        serializer.save(user_FK=self.request.user)
 
 @api_view(['POST'])
 def upload_image(request):
