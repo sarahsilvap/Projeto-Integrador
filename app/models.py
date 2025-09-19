@@ -58,13 +58,12 @@ class Request(models.Model):
     user_FK = models.ForeignKey(CustomUser, related_name='Request_user_FK', on_delete=models.CASCADE)
     creation_date = models.DateField(auto_now=True)
     closing_date = models.DateField(null=True, blank=True)
-    status_FK = models.ForeignKey(Status, related_name='Request_user_FK', on_delete=models.CASCADE)
+    
     
     def __str__(self):
         return self.title
     
-    
-# Status atual do chamado
+    # Status atual do chamado
     def current_status(self):
         return self.statuses.order_by('-date_of_modification').first()
 
