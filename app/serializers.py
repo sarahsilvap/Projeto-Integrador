@@ -20,6 +20,7 @@ class StatusSerializer(serializers.ModelSerializer):
         many = True
         
 class RequestSerializer(serializers.ModelSerializer):
+    current_status = serializers.SerializerMethodField()
     class Meta:
         model = Request
         fields = '__all__'
@@ -27,29 +28,33 @@ class RequestSerializer(serializers.ModelSerializer):
         
     #Ao crirar um Request, o User é definido automaticamente por aquele que o criou
     def create(self, validated_data):
-        # Define status como OPEN ao criar
-        validated_data['status_FK'] = Status.objects.get(name='OPEN')
-        return super().create(validated_data)
-    
-    
+        user = self.context['request'].user
+        request_instance = Request.objects.create(user_FK=user, **validated_data)
+
+        # Cria o status inicial como 'OPEN'
+        Status.objects.create(
+            request_FK=request_instance,
+            name='OPEN',
+            changed_by_FK=user
+        )
+
+        return request_instance
+
     def update(self, instance, validated_data):
-            user = self.context['request'].user
-            status_changed = 'status_FK' in validated_data and validated_data['status_FK'] != instance.status_FK
+        user = self.context['request'].user
+        new_status = self.context['request'].data.get('status')
 
-            if status_changed and not user.is_staff:
+        if new_status:
+            if not user.is_staff:
                 raise serializers.ValidationError("Você não tem permissão para alterar o status.")
+            Status.objects.create(
+                request_FK=instance,
+                name=new_status,
+                changed_by_FK=user
+            )
 
-            updated_instance = super().update(instance, validated_data)
+        return super().update(instance, validated_data)
 
-            # Se o status foi alterado, registra no histórico
-            if status_changed:
-                StatusHistory.objects.create(
-                    request_FK=updated_instance,
-                    status_FK=updated_instance.status_FK,
-                    changed_by_FK=user
-                )
-
-            return updated_instance
 
 class PhotoSerializer(serializers.ModelSerializer):
     class Meta:

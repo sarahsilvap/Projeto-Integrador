@@ -50,15 +50,6 @@ class Asset(models.Model):
     def __str__(self):
         return self.name
     
-class Status(models.Model):
-    name = models.CharField(max_length=100, choices=STATUS)
-    date_of_modification = models.DateField(auto_now=True)
-    changed_by_FK = models.ForeignKey(CustomUser, related_name='Status_changed_by_FK', on_delete=models.CASCADE)
-    
-    def __str__(self):
-        return self.name
-
-    
 class Request(models.Model):
     title = models.CharField(max_length=100)
     description = models.CharField()
@@ -71,15 +62,20 @@ class Request(models.Model):
     
     def __str__(self):
         return self.title
+    
+    
+# Status atual do chamado
+    def current_status(self):
+        return self.statuses.order_by('-date_of_modification').first()
 
-class StatusHistory(models.Model):
-    request_FK = models.ForeignKey(Request, related_name='status_history', on_delete=models.CASCADE)
-    status_FK = models.ForeignKey(Status, related_name='status_history_status', on_delete=models.PROTECT)
-    changed_by_FK = models.ForeignKey(CustomUser, related_name='status_history_user', on_delete=models.SET_NULL, null=True)
-    date_of_change = models.DateTimeField(auto_now_add=True)
+class Status(models.Model):
+    request_FK = models.ForeignKey(Request, related_name='statuses', on_delete=models.CASCADE)
+    name = models.CharField(max_length=100, choices=STATUS)
+    date_of_modification = models.DateTimeField(auto_now_add=True)
+    changed_by_FK = models.ForeignKey(CustomUser, related_name='status_changes', on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
-        return f"{self.request_FK.title} → {self.status_FK.name} em {self.date_of_change.strftime('%d/%m/%Y')}"
+        return f"{self.request_FK.title} → {self.name} em {self.date_of_modification.strftime('%d/%m/%Y')}"
 
 class Photo(models.Model):
     photo = models.ImageField(upload_to='fotos/')

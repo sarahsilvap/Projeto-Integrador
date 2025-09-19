@@ -35,6 +35,7 @@ class RequestView(ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(user_FK=self.request.user)
 
+
 @api_view(['POST'])
 def upload_image(request):
     image_file = request.FILES.get('photo')
