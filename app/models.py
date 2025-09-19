@@ -1,4 +1,6 @@
 from django.db import models
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
+from .user_manager import CustomUserManager
 
 DEPARTAMENTS = [
     ('LIBRARY', 'Biblioteca'),
@@ -24,12 +26,17 @@ STATUS = [
     ('CLOSED', 'Fechado'),
 ]
 
-class User(models.Model):
+class CustomUser(AbstractBaseUser, PermissionsMixin):
     name = models.CharField(max_length=255)
     email = models.EmailField(unique=True)
     
+    is_staff = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
+    
     #Login por e-mail:
     USERNAME_FIELD = "email"
+    
+    objects = CustomUserManager()
 
     def __str__(self):
         return self.name
@@ -46,13 +53,13 @@ class Asset(models.Model):
 class Status(models.Model):
     name = models.CharField(max_length=100, choices=STATUS)
     date_of_modification = models.DateField(auto_now=True)
-    changed_by_FK = models.ForeignKey(User, related_name='Status_changed_by_FK', on_delete=models.CASCADE)
+    changed_by_FK = models.ForeignKey(CustomUser, related_name='Status_changed_by_FK', on_delete=models.CASCADE)
     
     def __str__(self):
         return self.name
     
 class Request(models.Model):
-    user_FK = models.ForeignKey(User, related_name='Request_user_FK', on_delete=models.CASCADE)
+    user_FK = models.ForeignKey(CustomUser, related_name='Request_user_FK', on_delete=models.CASCADE)
     title = models.CharField(max_length=100)
     description = models.CharField()
     asset_FK = models.ForeignKey(Asset, related_name='Request_asset_FK', on_delete=models.CASCADE)

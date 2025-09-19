@@ -9,7 +9,7 @@ from .serializers import *
 
 
 class UserView(ModelViewSet):    
-    queryset = User.objects.all()
+    queryset = CustomUser.objects.all()
     serializer_class = UserSerializer
 
 class AssetView(ModelViewSet):    
