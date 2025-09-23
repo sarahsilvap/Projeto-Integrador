@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from .user_manager import CustomUserManager
+from django.utils import timezone
+
 
 DEPARTAMENTS = [
     ('LIBRARY', 'Biblioteca'),
@@ -52,13 +54,13 @@ class Asset(models.Model):
     
 class Request(models.Model):
     title = models.CharField(max_length=100)
-    description = models.CharField()
+    description = models.TextField()
     departament = models.CharField(max_length=100,choices=DEPARTAMENTS)
     asset_FK = models.ForeignKey(Asset, related_name='Request_asset_FK', on_delete=models.CASCADE)
     user_FK = models.ForeignKey(CustomUser, related_name='Request_user_FK', on_delete=models.CASCADE)
-    creation_date = models.DateField(auto_now=True)
-    closing_date = models.DateField(null=True, blank=True)
-    
+    creation_date = models.DateTimeField(auto_now=True)
+    closing_date = models.DateTimeField(null=True, blank=True)
+    closing_message = models.TextField(null=True, blank=True)
     
     def __str__(self):
         return self.title
@@ -68,13 +70,14 @@ class Request(models.Model):
         return self.statuses.order_by('-date_of_modification').first()
 
 class Status(models.Model):
-    request_FK = models.ForeignKey(Request, related_name='statuses', on_delete=models.CASCADE)
     name = models.CharField(max_length=100, choices=STATUS)
+    request_FK = models.ForeignKey(Request, related_name='statuses', on_delete=models.CASCADE)
     date_of_modification = models.DateTimeField(auto_now_add=True)
     changed_by_FK = models.ForeignKey(CustomUser, related_name='status_changes', on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
-        return f"{self.request_FK.title} → {self.name} em {self.date_of_modification.strftime('%d/%m/%Y')}"
+        data_brasilia = timezone.localtime(self.date_of_modification)
+        return f"{self.request_FK.title} → {self.name} em {data_brasilia.strftime('%d/%m/%Y às %H:%M:%S')}"
 
 class Photo(models.Model):
     photo = models.ImageField(upload_to='fotos/')

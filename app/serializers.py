@@ -1,5 +1,7 @@
 from rest_framework import serializers
 from .models import *
+from django.utils import timezone
+
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -21,40 +23,38 @@ class StatusSerializer(serializers.ModelSerializer):
         
 class RequestSerializer(serializers.ModelSerializer):
     current_status = serializers.SerializerMethodField()
+    user_FK = serializers.PrimaryKeyRelatedField(read_only=True)
     class Meta:
         model = Request
         fields = '__all__'
-        many = True
         
-    #Ao crirar um Request, o User é definido automaticamente por aquele que o criou
-    def create(self, validated_data):
-        user = self.context['request'].user
-        request_instance = Request.objects.create(user_FK=user, **validated_data)
-
-        # Cria o status inicial como 'OPEN'
-        Status.objects.create(
-            request_FK=request_instance,
-            name='OPEN',
-            changed_by_FK=user
-        )
-
-        return request_instance
+    def get_current_status(self, obj):
+        status = obj.current_status()
+        return status.name if status else None
 
     def update(self, instance, validated_data):
+        request = self.context.get('request')
         user = self.context['request'].user
         new_status = self.context['request'].data.get('status')
+        
+        #Atualiza os campos normais primeiro
+        instance = super().update(instance, validated_data)
 
         if new_status:
             if not user.is_staff:
                 raise serializers.ValidationError("Você não tem permissão para alterar o status.")
+            
             Status.objects.create(
                 request_FK=instance,
                 name=new_status,
                 changed_by_FK=user
             )
+            #Se o novo status for 'CLOSED' e ainda não tiver data de fechamento, registra a data
+            if new_status.upper() == 'CLOSED' and not instance.closing_date:
+                instance.closing_date = timezone.now()
+                instance.save(update_fields=['closing_date'])
 
-        return super().update(instance, validated_data)
-
+        return instance
 
 class PhotoSerializer(serializers.ModelSerializer):
     class Meta:
