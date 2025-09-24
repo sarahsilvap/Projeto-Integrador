@@ -27,14 +27,11 @@ SECRET_KEY = 'django-insecure-+te0@abd65(n1o6+_(^por02bx^f@k=val+pks%^bs&0x7-k#h
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
 #Qual servidor pode rodar o django
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['mangedesk-brbhg2dgcvhzdvch.westus2-01.azurewebsites.net', '127.0.0.1', 'localhost']
 
 #Quais serviços podem se comunicar com o django (frontend, nesse caso)
 CORS_ALLOW_ALL_ORIGINS = True
-
 
 # Application definition
 
