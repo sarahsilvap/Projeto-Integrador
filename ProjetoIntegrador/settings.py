@@ -27,11 +27,12 @@ SECRET_KEY = 'django-insecure-+te0@abd65(n1o6+_(^por02bx^f@k=val+pks%^bs&0x7-k#h
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-#Qual servidor pode rodar o django
-ALLOWED_HOSTS = ['mangedesk-brbhg2dgcvhzdvch.westus2-01.azurewebsites.net', '127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['*']
 
-#Quais serviços podem se comunicar com o django (frontend, nesse caso)
 CORS_ALLOW_ALL_ORIGINS = True
+CSRF_TRUSTED_ORIGINS = ['https://mangedesk-brbhg2dgcvhzdvch.westus2-01.azurewebsites.net']
+
+#https://mangedesk-brbhg2dgcvhzdvch.westus2-01.azurewebsites.net/
 
 # Application definition
 
@@ -52,6 +53,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -70,6 +72,7 @@ TEMPLATES = [
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.request',
+                'django.template.context_processors.static',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
@@ -118,20 +121,22 @@ AUTH_USER_MODEL = 'app.CustomUser'
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
-
 USE_I18N = True
 
 USE_TZ = True
 
 TIME_ZONE = 'America/Sao_Paulo'
-USE_TZ = True
 
+USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
+
 STATIC_URL = 'static/'
+STATICFILES_DIRS = [BASE_DIR / 'static']
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
