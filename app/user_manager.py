@@ -1,7 +1,7 @@
 from django.contrib.auth.models import BaseUserManager
 
 class CustomUserManager(BaseUserManager):
-    def create_user(self, email, password=None, **extra_fields): 
+    def create_user(self, email, password=None, name=None, **extra_fields):
 
         #Se faltar algum campo (if None), gera um erro
         if None in (email, password):
@@ -11,6 +11,9 @@ class CustomUserManager(BaseUserManager):
         email_ok = self.normalize_email(email)
         
         extra_fields.setdefault("is_active", True)
+
+        if name:
+            extra_fields["name"] = name
 
         #Prepara para salvar no banco. Construção do objeto
         user = self.model(email = email_ok, **extra_fields)
@@ -23,11 +26,11 @@ class CustomUserManager(BaseUserManager):
 
         return user
     
-    def create_superuser(self, email, password=None, **extra_fields):
+    def create_superuser(self, email, password=None, name=None, **extra_fields):
         #Poderá acessar a tela de admin do Django
         extra_fields.setdefault("is_staff", True)
         #Seta no bando do Django a propriedade Super User para este usuário
         extra_fields.setdefault("is_superuser", True)
 
         #chama o método padrão de criação de usuário
-        return self.create_user(email, password, **extra_fields)
+        return self.create_user(email, password, name, **extra_fields)
