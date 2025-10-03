@@ -30,7 +30,8 @@ DEBUG = True
 ALLOWED_HOSTS = ['*']
 
 CORS_ALLOW_ALL_ORIGINS = True
-CSRF_TRUSTED_ORIGINS = ['https://mangedesk-brbhg2dgcvhzdvch.westus2-01.azurewebsites.net']
+CSRF_TRUSTED_ORIGINS = ['https://mangedesk-brbhg2dgcvhzdvch.westus2-01.azurewebsites.net',
+                        'http://localhost:8001',]
 
 #https://mangedesk-brbhg2dgcvhzdvch.westus2-01.azurewebsites.net/
 
@@ -152,6 +153,7 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_FILTER_BACKENDS': [
         'django_filters.rest_framework.DjangoFilterBackend'
-    ]
-
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 2,
 }
