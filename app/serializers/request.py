@@ -1,10 +1,14 @@
 from rest_framework import serializers
 from ..models import Request, Status
 from django.utils import timezone
+from .user import UserSerializer
 
 class RequestSerializer(serializers.ModelSerializer):
     current_status = serializers.SerializerMethodField()
-    user_FK = serializers.PrimaryKeyRelatedField(read_only=True)
+    user_FK = serializers.SlugRelatedField(
+        read_only=True,
+        slug_field='name'  # vai retornar só o name do usuário
+    )
     class Meta:
         model = Request
         fields = '__all__'
