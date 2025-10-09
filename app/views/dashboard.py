@@ -1,7 +1,6 @@
-
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from app.models import Status, Request  # ajuste o import conforme sua estrutura
+from app.models import Request 
 
 class StatusDashboardView(APIView):
     def get(self, request):
