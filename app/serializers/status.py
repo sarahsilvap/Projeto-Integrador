@@ -19,8 +19,8 @@ class StatusSerializer(serializers.ModelSerializer):
             if Status.objects.filter(request_FK=request_fk, name__iexact='CLOSED').exclude(pk=getattr(instance, 'pk', None)).exists():
                 raise serializers.ValidationError("Este request já foi fechado anteriormente e não pode ser fechado novamente.")
 
-            if instance and instance.name != 'IN_PROGRESS':
-                raise serializers.ValidationError('Só é permitido fechar se o status anterior for "IN_PROGRESS".')
+            if instance and instance.name != 'ONGOING':
+                raise serializers.ValidationError('Só é permitido fechar se o status anterior for "ONGOING".')
 
         return data
 

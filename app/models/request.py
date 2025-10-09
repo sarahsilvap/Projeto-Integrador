@@ -1,10 +1,10 @@
 from django.db import models
 
 class URGENCY_LEVELS(models.TextChoices):
-    LOW = 'LOW', 'low' #permite múltiplas opções
-    MEDIUM = 'MEDIUM'
-    HIGH = 'HIGH'
-    EXTRA_HIGH = 'EXTRA_HIGH'
+    LOW = 'LOW', 'Baixa' #permite múltiplas opções
+    MEDIUM = 'MEDIUM', 'Médio'
+    HIGH = 'HIGH', 'Alta'
+    EXTRA_HIGH = 'EXTRA_HIGH', 'Extremamente alta'
 
 DEPARTAMENTS = [
     ('LIBRARY', 'Biblioteca'),

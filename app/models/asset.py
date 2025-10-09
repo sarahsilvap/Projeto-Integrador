@@ -23,7 +23,6 @@ class Asset(models.Model):
     name = models.CharField(max_length=255)
     departament = models.CharField(max_length=100,choices=DEPARTAMENTS)
     tag_number = models.IntegerField(unique=True, blank=True)
-    serial_number = models.CharField(unique=True, blank=True)
     
     def __str__(self):
         return self.name
