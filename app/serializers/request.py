@@ -4,8 +4,10 @@ from ..models import Request, Status
 
 
 class RequestSerializer(serializers.ModelSerializer):
+    departament = serializers.CharField(source='get_departament_display')
     # Campo calculado
     current_status = serializers.SerializerMethodField()
+    urgency_level = serializers.CharField(source='get_urgency_level_display', read_only=True)
 
     # Exibir nome do usuário e do ativo (somente leitura)
     user_name = serializers.CharField(source='user_FK.name', read_only=True)
@@ -49,7 +51,7 @@ class RequestSerializer(serializers.ModelSerializer):
     # -------------------------------------------------------
     def get_current_status(self, obj):
         status = obj.current_status()
-        return status.name if status else None
+        return status.get_name_display() if status else None
 
     # -------------------------------------------------------
     # UPDATE

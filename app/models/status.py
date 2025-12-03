@@ -2,12 +2,13 @@ from django.db import models
 from django.utils import timezone
 
 class STATUS(models.TextChoices):
-    OPEN = 'OPEN'
-    WAITING_ASSIGNEE = 'WAITING_ASSIGNEE'
-    ONGOING = 'ONGOING'
-    DONE = 'DONE'
-    CLOSED = 'CLOSED'
-    CANCELLED = 'CANCELLED'
+    OPEN = 'OPEN', 'Aberto'
+    WAITING_ASSIGNEE = 'WAITING_ASSIGNEE', 'Aguardando Atribuição'
+    ONGOING = 'ONGOING', 'Em Andamento'
+    DONE = 'DONE', 'Concluído'
+    CLOSED = 'CLOSED', 'Fechado'
+    CANCELLED = 'CANCELLED', 'Cancelado'
+
 
 
 class Status(models.Model):

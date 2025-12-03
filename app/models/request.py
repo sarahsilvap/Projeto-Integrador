@@ -43,3 +43,12 @@ class Request(models.Model):
     # Status atual do chamado
     def current_status(self):
         return self.statuses.order_by('-date_of_modification').first()
+
+class RequestImage(models.Model):
+    image = models.FileField(upload_to='request_images')
+    task_FK = models.ForeignKey('Request',
+                                related_name='RequestStatusImage_request_FK',
+                                on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return f'{self.task_FK.id}-{self.id}'
