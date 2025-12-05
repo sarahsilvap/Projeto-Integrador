@@ -1,26 +1,34 @@
 from rest_framework import serializers
 from django.utils import timezone
-from ..models import Request, Status
-
+from ..models import Request, Status, RequestImage
+from .request_image import RequestImageSerializer
+from ..models import URGENCY_LEVELS
 
 class RequestSerializer(serializers.ModelSerializer):
-    departament = serializers.CharField(source='get_departament_display')
     # Campo calculado
     current_status = serializers.SerializerMethodField()
-    urgency_level = serializers.CharField(source='get_urgency_level_display', read_only=True)
 
     # Exibir nome do usuário e do ativo (somente leitura)
     user_name = serializers.CharField(source='user_FK.name', read_only=True)
     asset_name = serializers.CharField(source='asset_FK.name', read_only=True)
+
+    # Exibir tradução de 'urgency_level' usando o display de escolhas
+    urgency_level = serializers.CharField(source='get_urgency_level_display', read_only=True)  # Exibição traduzida
+
+    # Receber o valor diretamente no PATCH
+    urgency_level_input = serializers.ChoiceField(choices=URGENCY_LEVELS.choices, required=False)  # Para aceitar os valores
+
+    departament = serializers.CharField(source='get_departament_display', read_only=True)
+
+    images = RequestImageSerializer(many=True, read_only=True)
 
     class Meta:
         model = Request
         fields = '__all__'
 
         extra_kwargs = {
-            "user_FK": {"write_only": True, "required": False},  
+            "user_FK": {"write_only": True, "required": False},
             "asset_FK": {"write_only": True, "required": True},
-
             "creation_date": {"read_only": True},
             "closing_date": {"read_only": True},
             "closing_message": {"required": False},
@@ -32,17 +40,25 @@ class RequestSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         user = self.context['request'].user
 
-        # atribui automaticamente o usuário autenticado
+        # Atribui automaticamente o usuário autenticado
         validated_data["user_FK"] = user
 
         request_obj = Request.objects.create(**validated_data)
 
-        # cria status inicial OPEN
+        # Cria status inicial OPEN
         Status.objects.create(
             request_FK=request_obj,
             name='OPEN',
             changed_by_FK=user
         )
+
+        request_data = self.context['request']
+        images = request_data.FILES.getlist('images')
+        for image_file in images:
+            RequestImage.objects.create(
+                request_FK=request_obj,
+                image=image_file
+            )
 
         return request_obj
 
@@ -60,19 +76,23 @@ class RequestSerializer(serializers.ModelSerializer):
         user = self.context['request'].user
         new_status = self.context['request'].data.get('status')
 
-        # regra: não permitir edição se já estiver CLOSED
+        # Regra: não permitir edição se já estiver CLOSED
         current_status = instance.current_status()
         if current_status and current_status.name.upper() == 'CLOSED':
             raise serializers.ValidationError(
                 "Este request já está fechado e não pode ser alterado."
             )
 
+        # Atualiza o campo de urgency_level se passado no PATCH
+        urgency_level_input = validated_data.get('urgency_level_input', None)
+        if urgency_level_input:
+            instance.urgency_level = urgency_level_input  # Atualiza o valor diretamente
+
         # Atualiza os campos normais
         instance = super().update(instance, validated_data)
 
         # Se houver mudança de status
         if new_status:
-
             # Apenas staff pode alterar status
             if not user.is_staff:
                 raise serializers.ValidationError("Você não tem permissão para alterar o status.")
@@ -99,5 +119,14 @@ class RequestSerializer(serializers.ModelSerializer):
                 changed_by_FK=user
             )
 
-        instance.save()
-        return instance
+        # Atualiza as imagens associadas ao request
+        request_data = self.context['request']
+        images = request_data.FILES.getlist('images')
+        for image_file in images:
+            RequestImage.objects.create(
+                request_FK=instance,
+                image=image_file
+            )
+
+        instance.save()  # Salva as modificações no objeto
+        return instance  # Retorna a instância atualizada aqui

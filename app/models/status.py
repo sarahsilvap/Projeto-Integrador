@@ -9,8 +9,6 @@ class STATUS(models.TextChoices):
     CLOSED = 'CLOSED', 'Fechado'
     CANCELLED = 'CANCELLED', 'Cancelado'
 
-
-
 class Status(models.Model):
     name = models.CharField(max_length=100, choices=STATUS)
     request_FK = models.ForeignKey('Request', related_name='statuses', on_delete=models.CASCADE)
@@ -18,5 +16,10 @@ class Status(models.Model):
     changed_by_FK = models.ForeignKey('CustomUser', related_name='status_changes', on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
+        # Formatação da data para o formato brasileiro
         data_brasilia = timezone.localtime(self.date_of_modification)
+        # Exibe a requisição com o status e a data da modificação
         return f"{self.request_FK.title} → {self.name} em {data_brasilia.strftime('%d/%m/%Y às %H:%M:%S')}"
+
+    def get_name(self, obj):
+        return obj.get_name_display()

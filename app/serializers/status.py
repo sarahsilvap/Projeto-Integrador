@@ -2,6 +2,8 @@ from rest_framework import serializers
 from ..models import Status
 
 class StatusSerializer(serializers.ModelSerializer):
+    name = serializers.SerializerMethodField()
+    
     class Meta:
         model = Status
         fields = '__all__'
@@ -31,3 +33,6 @@ class StatusSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         validated_data['changed_by_FK'] = self.context['request'].user
         return super().create(validated_data)
+    
+    def get_name(self, obj):
+        return obj.get_name_display()  # Retorna a descrição do status em português

@@ -46,9 +46,10 @@ class Request(models.Model):
 
 class RequestImage(models.Model):
     image = models.FileField(upload_to='request_images')
-    task_FK = models.ForeignKey('Request',
-                                related_name='RequestStatusImage_request_FK',
+    request_FK = models.ForeignKey('Request',
+                                related_name='images',
                                 on_delete=models.CASCADE)
+    uploaded_at = models.DateTimeField(auto_now_add=True)
     
     def __str__(self):
         return f'{self.task_FK.id}-{self.id}'
