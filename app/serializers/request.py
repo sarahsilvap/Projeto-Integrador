@@ -2,7 +2,7 @@ from rest_framework import serializers
 from django.utils import timezone
 from ..models import Request, Status, RequestImage
 from .request_image import RequestImageSerializer
-from ..models import URGENCY_LEVELS
+from ..models import URGENCY_LEVELS, DEPARTAMENTS
 
 class RequestSerializer(serializers.ModelSerializer):
     # Campo calculado
@@ -12,13 +12,13 @@ class RequestSerializer(serializers.ModelSerializer):
     user_name = serializers.CharField(source='user_FK.name', read_only=True)
     asset_name = serializers.CharField(source='asset_FK.name', read_only=True)
 
-    # Exibir tradução de 'urgency_level' usando o display de escolhas
-    urgency_level = serializers.CharField(source='get_urgency_level_display', read_only=True)  # Exibição traduzida
+    # Exibir tradução de 'urgency_level' e 'departament' diretamente usando os métodos de exibição
+    urgency_level_display = serializers.CharField(source='get_urgency_level_display', read_only=True)
+    departament_display = serializers.CharField(source='get_departament_display', read_only=True)
 
-    # Receber o valor diretamente no PATCH
-    urgency_level_input = serializers.ChoiceField(choices=URGENCY_LEVELS.choices, required=False)  # Para aceitar os valores
-
-    departament = serializers.CharField(source='get_departament_display', read_only=True)
+    # Receber os valores diretamente no PATCH e POST
+    urgency_level_input = serializers.ChoiceField(choices=URGENCY_LEVELS.choices, required=False)
+    departament_input = serializers.ChoiceField(choices=DEPARTAMENTS, required=False)
 
     images = RequestImageSerializer(many=True, read_only=True)
 
@@ -43,6 +43,7 @@ class RequestSerializer(serializers.ModelSerializer):
         # Atribui automaticamente o usuário autenticado
         validated_data["user_FK"] = user
 
+        # Cria a requisição
         request_obj = Request.objects.create(**validated_data)
 
         # Cria status inicial OPEN
@@ -52,6 +53,7 @@ class RequestSerializer(serializers.ModelSerializer):
             changed_by_FK=user
         )
 
+        # Processa as imagens associadas à requisição
         request_data = self.context['request']
         images = request_data.FILES.getlist('images')
         for image_file in images:
@@ -88,6 +90,11 @@ class RequestSerializer(serializers.ModelSerializer):
         if urgency_level_input:
             instance.urgency_level = urgency_level_input  # Atualiza o valor diretamente
 
+        # Atualiza o campo de departament se passado no PATCH
+        departament_input = validated_data.get('departament_input', None)
+        if departament_input:
+            instance.departament = departament_input  # Atualiza o valor diretamente
+
         # Atualiza os campos normais
         instance = super().update(instance, validated_data)
 
@@ -119,7 +126,7 @@ class RequestSerializer(serializers.ModelSerializer):
                 changed_by_FK=user
             )
 
-        # Atualiza as imagens associadas ao request
+        # Processa as imagens associadas ao request
         request_data = self.context['request']
         images = request_data.FILES.getlist('images')
         for image_file in images:
