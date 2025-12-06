@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-
 from .models import *
+
 
 class CustomUserAdmin(UserAdmin):
     model = CustomUser
@@ -23,10 +23,25 @@ class CustomUserAdmin(UserAdmin):
         ),
     )
 
+class RequestAdmin(admin.ModelAdmin):
+    # Campos a serem exibidos na lista
+    list_display = ('title', 'urgency_level', 'creation_date', 'departament', 'asset_FK')
+
+    # Filtros disponíveis na barra lateral
+    list_filter = ('urgency_level', 'departament', 'statuses')
+
+    # Campos que podem ser pesquisados
+    search_fields = ('title', 'description')
+
+    def get_status(self, obj):
+        return obj.statuses.order_by('-date_of_modification').first().name if obj.statuses.exists() else 'Sem status'
+
+    get_status.admin_order_field = 'status'
+    get_status.short_description = 'Status'
+
+admin.site.register(Request, RequestAdmin)
 admin.site.register(CustomUser, CustomUserAdmin)
 admin.site.register(Asset)
-admin.site.register(Request)
 admin.site.register(Status)
-admin.site.register(Photo)
 
 # Register your models here.

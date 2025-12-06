@@ -19,7 +19,7 @@ class Status(models.Model):
         # Formatação da data para o formato brasileiro
         data_brasilia = timezone.localtime(self.date_of_modification)
         # Exibe a requisição com o status e a data da modificação
-        return f"{self.request_FK.title} → {self.name} em {data_brasilia.strftime('%d/%m/%Y às %H:%M:%S')}"
+        return self.name
 
     def get_name(self, obj):
         return obj.get_name_display()

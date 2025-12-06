@@ -1,9 +1,11 @@
 from rest_framework import viewsets
 from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from ..models import Request, RequestImage
+from ..models import Request
 from ..serializers import RequestSerializer
+from ..filters.request_filters import RequestFilter  
 
 class RequestView(viewsets.ModelViewSet):
     """
@@ -12,6 +14,13 @@ class RequestView(viewsets.ModelViewSet):
     serializer_class = RequestSerializer
     parser_classes = (MultiPartParser, FormParser, JSONParser)
     permission_classes = [IsAuthenticated]  # Apenas usuários autenticados podem acessar
+    filter_backends = (DjangoFilterBackend,)  # Aplica o filtro
+    filterset_class = RequestFilter    # Informa qual filtro usar
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())  # Aplica os filtros aqui
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
 
     def get_queryset(self):
         """
