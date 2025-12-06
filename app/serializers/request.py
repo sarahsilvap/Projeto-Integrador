@@ -6,10 +6,6 @@ from ..models import URGENCY_LEVELS, STATUS, DEPARTAMENTS  # Se necessário
 class RequestSerializer(serializers.ModelSerializer):
     # Display do status (em português)
     current_status_display = serializers.CharField(source='current_status.get_name_display', read_only=True)
-
-    # Novo campo para mostrar o status em inglês (valor real)
-    current_status = serializers.CharField(read_only=True)  # Agora, remove-se o 'source'
-
     # Display de outros campos
     urgency_level_display = serializers.CharField(source='get_urgency_level_display', read_only=True)
     departament_display = serializers.CharField(source='get_departament_display', read_only=True)
