@@ -4,6 +4,7 @@ from .request import RequestView
 from .status import StatusView
 from .dashboard import StatusDashboardView
 from .ticketsByDepartament import TicketsByDepartamentView
+from .departaments_views import DepartmentChoicesView
 
 __all__ = [
     "UserView",
@@ -12,4 +13,5 @@ __all__ = [
     "StatusView",
     "StatusDashboardView",
     "TicketsByDepartamentView",
+    "DepartmentChoicesView"
 ]

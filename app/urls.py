@@ -2,7 +2,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import UserView, AssetView, StatusView, RequestView, StatusDashboardView, TicketsByDepartamentView
+from .views import UserView, AssetView, StatusView, RequestView, StatusDashboardView, TicketsByDepartamentView, DepartmentChoicesView
 
 router = DefaultRouter()
 
@@ -16,6 +16,7 @@ urlpatterns = [
     path('', include(router.urls)),
     path('dashboard/status/', StatusDashboardView.as_view(), name='status-dashboard'),
     path('dashboard/bydepartament/', TicketsByDepartamentView.as_view(), name='status-dashboard'),
+    path('departments/', DepartmentChoicesView.as_view(), name='department-choices'),
 ]
 
 

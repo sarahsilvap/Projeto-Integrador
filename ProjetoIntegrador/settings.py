@@ -32,7 +32,7 @@ DEBUG = True
 ALLOWED_HOSTS = ['*']
 
 CORS_ALLOW_ALL_ORIGINS = True
-CSRF_TRUSTED_ORIGINS = ['https://mangedesk-brbhg2dgcvhzdvch.westus2-01.azurewebsites.net',
+CSRF_TRUSTED_ORIGINS = ['https://mangedesk2.azurewebsites.net',
                         'http://localhost:8001',]
 
 #https://mangedesk-brbhg2dgcvhzdvch.westus2-01.azurewebsites.net/
@@ -176,10 +176,11 @@ SIMPLE_JWT = {
 DJOSER = {
     "USER_CREATE_PASSWORD_RETYPE": False,
     "SEND_ACTIVATION_EMAIL": False,
+    # 🔑 ESTA LINHA DEVE SER ADICIONADA:
+    "LOGIN_FIELD": "email", 
     "SERIALIZERS": {
-        "user": "app.serializers.UserSerializer",         # usado para detalhes de usuários
-        "current_user": "app.serializers.UserSerializer", # usado especificamente em /auth/users/me/
+        "user": "app.serializers.UserSerializer",
+        "current_user": "app.serializers.UserSerializer",
     },
-     "TOKEN_MODEL": None,
+    "TOKEN_MODEL": None,
 }
-

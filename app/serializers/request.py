@@ -1,60 +1,62 @@
 from rest_framework import serializers
 from ..models import Request, RequestImage, Status
 from .request_image import RequestImageSerializer
-from ..models import URGENCY_LEVELS, STATUS, DEPARTAMENTS  # Se necessário
+from ..models import URGENCY_LEVELS, STATUS, DEPARTAMENTS
 
 class RequestSerializer(serializers.ModelSerializer):
-    # Display do status (em português)
+    # Campos READ-ONLY (Displays e FKs)
     current_status_display = serializers.CharField(source='current_status.get_name_display', read_only=True)
-    # Display de outros campos
     urgency_level_display = serializers.CharField(source='get_urgency_level_display', read_only=True)
     departament_display = serializers.CharField(source='get_departament_display', read_only=True)
-
-    # Campos de entrada para atualizar os valores
-    urgency_level_input = serializers.ChoiceField(choices=URGENCY_LEVELS.choices, required=False)
-    departament_input = serializers.ChoiceField(choices=DEPARTAMENTS, required=False)
-    current_status_input = serializers.ChoiceField(choices=STATUS.choices, required=False)  # Para receber o valor real do status
-
+    creation_date = serializers.DateTimeField(format="%d/%m/%Y, às %H:%M", read_only=True)
+    status = serializers.CharField(source='current_status.name', read_only=True) # Código canônico
+    
     user_name = serializers.CharField(source='user_FK.name', read_only=True)
     asset_name = serializers.CharField(source='asset_FK.name', read_only=True)
     images = RequestImageSerializer(many=True, read_only=True)
 
+    # ⚠️ NOVO: Campo temporário para receber o novo status, se for passado no payload.
+    # Se você quiser que o payload use 'status_code' para criar o status:
+    status_code = serializers.ChoiceField(choices=STATUS.choices, write_only=True, required=False)
+
     class Meta:
         model = Request
-        fields = '__all__'
+        # ✅ Liste explicitamente todos os campos do MODELO que devem ser lidos/escritos
+        fields = [
+            'id', 'title', 'description', 
+            'urgency_level', 'departament', # Campos do modelo (usados para escrita)
+            'user_FK', 'asset_FK', 
+            'closing_message', 'closing_date',
+            
+            # ➕ Campos explícitos (read-only e temporários)
+            'current_status_display', 'urgency_level_display', 'departament_display', 
+            'creation_date', 'status', 'user_name', 'asset_name', 'images',
+            'status_code' # Campo temporário para escrita (se você usar 'status_code' no payload)
+        ]
 
         extra_kwargs = {
             "user_FK": {"write_only": True, "required": False},
             "asset_FK": {"write_only": True, "required": True},
-            "creation_date": {"read_only": True},
-            "closing_date": {"read_only": True},
-            "closing_message": {"required": False},
+            # ... o resto está OK
         }
 
     def create(self, validated_data):
-        # Atribui automaticamente o usuário autenticado
         user = self.context['request'].user
         validated_data["user_FK"] = user
 
+        # ⚠️ Pega o campo temporário de status do payload
+        status_code = validated_data.pop('status_code', None)
+
         request_obj = Request.objects.create(**validated_data)
 
-        # Se o current_status_input for fornecido, cria o status com esse valor
-        current_status_input = validated_data.pop('current_status_input', None)
-        if current_status_input:
-            Status.objects.create(
-                name=current_status_input,
-                request_FK=request_obj,
-                changed_by_FK=user
-            )
-        else:
-            # Se não passar status, define como 'OPEN' por padrão
-            Status.objects.create(
-                name='OPEN',
-                request_FK=request_obj,
-                changed_by_FK=user
-            )
+        # Cria o status
+        Status.objects.create(
+            name=status_code or 'OPEN', # Usa o código do payload ou 'OPEN'
+            request_FK=request_obj,
+            changed_by_FK=user
+        )
 
-        # Criar e associar imagens
+        # ... Lógica de criação e associação de imagens
         request_data = self.context['request']
         images = request_data.FILES.getlist('images')
         for image_file in images:
@@ -68,26 +70,24 @@ class RequestSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         user = self.context['request'].user
 
-        # Atualizando o current_status
-        new_status_input = validated_data.get('current_status_input', None)
-        if new_status_input:
-            # Cria um novo status se o status for alterado
+        # Atualizando o status (usando 'status_code' como campo de entrada)
+        new_status_code = validated_data.pop('status_code', None)
+        if new_status_code:
             Status.objects.create(
-                name=new_status_input,
+                name=new_status_code,
                 request_FK=instance,
                 changed_by_FK=user
             )
 
-        # Atualiza outros campos como urgency_level e departament
-        urgency_level_input = validated_data.get('urgency_level_input', None)
-        if urgency_level_input:
-            instance.urgency_level = urgency_level_input
+        # Atualiza campos diretamente no modelo
+        if 'urgency_level' in validated_data:
+            instance.urgency_level = validated_data['urgency_level']
 
-        departament_input = validated_data.get('departament_input', None)
-        if departament_input:
-            instance.departament = departament_input
-
+        if 'departament' in validated_data:
+            instance.departament = validated_data['departament']
+            
+        # O super().update já cuida de 'title', 'description', etc.
         instance = super().update(instance, validated_data)
 
-        instance.save()  # Salva as modificações
+        instance.save()
         return instance
