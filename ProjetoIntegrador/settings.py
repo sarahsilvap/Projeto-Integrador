@@ -165,22 +165,21 @@ REST_FRAMEWORK = {
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=1440),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
-    'ROTATE_REFRESH_TOKENS': True,          # útil para segurança (opcional)
-    'BLACKLIST_AFTER_ROTATION': True,       # requer adicionar app blacklist se usar rotação
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
     'ALGORITHM': 'HS256',
-    # 'SIGNING_KEY': SECRET_KEY,  # por padrão usa SECRET_KEY
     'AUTH_HEADER_TYPES': ('Bearer',),
-    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
-}
+    'TOKEN_OBTAIN_SERIALIZER': 'app.serializers.CustomTokenObtainPairSerializer',
+}   
 
 DJOSER = {
     "USER_CREATE_PASSWORD_RETYPE": False,
     "SEND_ACTIVATION_EMAIL": False,
-    # 🔑 ESTA LINHA DEVE SER ADICIONADA:
     "LOGIN_FIELD": "email", 
-    "SERIALIZERS": {
-        "user": "app.serializers.UserSerializer",
-        "current_user": "app.serializers.UserSerializer",
-    },
+    # "SERIALIZERS": {
+        # "token_create": "app.serializers.CustomTokenObtainPairSerializer", # OK
+        # "user": "app.serializers.UserSerializer", # PROVÁVEL ERRO
+        # "current_user": "app.serializers.UserSerializer", # PROVÁVEL ERRO
+    # },
     "TOKEN_MODEL": None,
 }

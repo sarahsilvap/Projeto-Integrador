@@ -13,6 +13,7 @@ class RequestSerializer(serializers.ModelSerializer):
     
     user_name = serializers.CharField(source='user_FK.name', read_only=True)
     asset_name = serializers.CharField(source='asset_FK.name', read_only=True)
+    asset_tag_number = serializers.CharField(source='asset_FK.tag_number', read_only=True)
     images = RequestImageSerializer(many=True, read_only=True)
 
     # ⚠️ NOVO: Campo temporário para receber o novo status, se for passado no payload.
@@ -30,7 +31,7 @@ class RequestSerializer(serializers.ModelSerializer):
             
             # ➕ Campos explícitos (read-only e temporários)
             'current_status_display', 'urgency_level_display', 'departament_display', 
-            'creation_date', 'status', 'user_name', 'asset_name', 'images',
+            'creation_date', 'status', 'user_name', 'asset_name', 'images', 'asset_tag_number',
             'status_code' # Campo temporário para escrita (se você usar 'status_code' no payload)
         ]
 
