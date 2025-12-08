@@ -30,13 +30,12 @@ class Request(models.Model):
     urgency_level = models.CharField(max_length=50,
                                      choices=URGENCY_LEVELS.choices,
                                      default=URGENCY_LEVELS.LOW)
-    departament = models.CharField(max_length=100,choices=DEPARTAMENTS)
+    departament = models.CharField(max_length=100,choices=DEPARTAMENTS, blank=True, null=True)
     asset_FK = models.ForeignKey('Asset', related_name='Request_asset_FK', on_delete=models.CASCADE)
     user_FK = models.ForeignKey('CustomUser', related_name='Request_user_FK', on_delete=models.CASCADE)
     creation_date = models.DateTimeField(auto_now=True)
     closing_date = models.DateTimeField(null=True, blank=True)
-    closing_message = models.TextField(null=True, blank=True)
-    
+    closing_message = models.TextField(null=True, blank=True)    
     def __str__(self):
         return self.title
     

@@ -34,10 +34,10 @@ class RequestView(viewsets.ModelViewSet):
             return Request.objects.all()
 
         # Usuários comuns, apenas suas requisições
-        requests = Request.objects.filter(user_FK=user)
+        # Este QuerySet pode ser vazio, o que é o comportamento esperado.
+        requests_queryset = Request.objects.filter(user_FK=user)
+        
+        # 🚨 CORREÇÃO: Remova a verificação 'if not requests.exists():' que retorna Response.
+        # A lista vazia será serializada corretamente.
 
-        # Caso o usuário não tenha requisições, retorna uma mensagem amigável
-        if not requests.exists():
-            return Response({"detail": "Nenhuma requisição encontrada para este usuário."}, status=404)
-
-        return requests
+        return requests_queryset

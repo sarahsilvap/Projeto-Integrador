@@ -8,5 +8,5 @@ class AssetSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
-        representation['departament'] = instance.get_departament_display()
+        representation['departament_display'] = instance.get_departament_display()
         return representation
